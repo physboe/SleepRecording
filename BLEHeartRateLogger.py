@@ -34,7 +34,7 @@ def parse_args():
     """
     Command line argument parsing
     """
-    log.info("Argument Parser")
+    print("Argument Parser")
     parser = argparse.ArgumentParser(description="Bluetooth heart rate monitor data logger")
     parser.add_argument("-m", metavar='MAC', type=str, help="MAC address of BLE device (default: auto-discovery)")
     parser.add_argument("-b", action='store_true', help="Check battery level")
