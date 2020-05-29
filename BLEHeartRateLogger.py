@@ -228,7 +228,7 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
         log.info("Connected to " + addr)
 
         tstamp = int(time.time())
-        record_id  = sq.execute("INSERT INTO record VALUES ( ?)", (tstamp))
+        record_id  = sq.execute("INSERT INTO record (tstamp) VALUES (?)", (tstamp))
 
 
         if check_battery:
