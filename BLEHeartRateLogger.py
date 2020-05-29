@@ -119,7 +119,6 @@ def insert_db(sq, record_id , res, period, min_ce=2, max_ce=60 * 2, grace_commit
     tstamp = int(time.time())
     if "rr" in res:
         for rr in res["rr"]:
-            log.error("record_id: " + str(record_id))
             sq.execute("INSERT INTO hrm (tstamp, hr, rr, record_id) VALUES (?, ?, ?, ?)", (tstamp, res["hr"], rr, record_id))
     #else:
     #    sq.execute("INSERT INTO hrm VALUES (?, ?, ?)", (tstamp, res["hr"], -1))
