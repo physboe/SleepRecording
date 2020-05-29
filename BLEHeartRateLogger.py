@@ -34,7 +34,6 @@ def parse_args():
     """
     Command line argument parsing
     """
-    print("Argument Parser")
     parser = argparse.ArgumentParser(description="Bluetooth heart rate monitor data logger")
     parser.add_argument("-m", metavar='MAC', type=str, help="MAC address of BLE device (default: auto-discovery)")
     parser.add_argument("-b", action='store_true', help="Check battery level")
@@ -228,7 +227,7 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
         log.info("Connected to " + addr)
 
         tstamp = int(time.time())
-        record_id  = sq.execute("INSERT INTO record (tstamp) VALUES (?)", (tstamp))
+        record_id  = sq.execute("INSERT INTO record (tstamp) VALUES (?)", (tstamp,))
 
 
         if check_battery:
