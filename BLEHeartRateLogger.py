@@ -228,8 +228,8 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
         log.info("Connected to " + addr)
 
         tstamp = int(time.time())
-        record_id  = sq.execute("INSERT INTO record (tstamp) VALUES (?)", (tstamp,))
-
+        sq.execute("INSERT INTO record (tstamp) VALUES (?)", (tstamp,))
+        record_id  = sq.lastrowid
 
         if check_battery:
             gt.sendline("char-read-uuid 00002a19-0000-1000-8000-00805f9b34fb")
