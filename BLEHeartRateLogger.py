@@ -34,6 +34,7 @@ def parse_args():
     """
     Command line argument parsing
     """
+    log.info("Argument Parser")
     parser = argparse.ArgumentParser(description="Bluetooth heart rate monitor data logger")
     parser.add_argument("-m", metavar='MAC', type=str, help="MAC address of BLE device (default: auto-discovery)")
     parser.add_argument("-b", action='store_true', help="Check battery level")
@@ -330,6 +331,7 @@ def cli():
     """
     Entry point for the command line interface
     """
+    log.info("command line interface")
     args = parse_args()
 
     if args.g != "gatttool" and not os.path.exists(args.g):
