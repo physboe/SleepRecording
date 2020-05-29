@@ -107,7 +107,7 @@ def interpret(data):
     return res
 
 
-def insert_db(sq, res, period, min_ce=2, max_ce=60 * 2, grace_commit=2 / 3.):
+def insert_db(sq, record_id , res, period, min_ce=2, max_ce=60 * 2, grace_commit=2 / 3.):
     """
     Inserts data into the database
     """
@@ -120,7 +120,7 @@ def insert_db(sq, res, period, min_ce=2, max_ce=60 * 2, grace_commit=2 / 3.):
     tstamp = int(time.time())
     if "rr" in res:
         for rr in res["rr"]:
-            sq.execute("INSERT INTO hrm VALUES (?, ?, ?)", (tstamp, res["hr"], rr))
+            sq.execute("INSERT INTO hrm VALUES (?, ?, ?, ?)", (tstamp, res["hr"], rr, record_id))
     #else:
     #    sq.execute("INSERT INTO hrm VALUES (?, ?, ?)", (tstamp, res["hr"], -1))
 
@@ -183,8 +183,8 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
         # Init database connection
         sq = sqlite3.connect(sqlfile)
         with sq:
-            sq.execute("CREATE TABLE IF NOT EXISTS record (record_id INTEGER PRIMARY KEY, tstamp INTEGER)")
-            sq.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, FOREIGN KEY (fk_record_id) REFERENCES record (record_id))")
+            sq.execute("CREATE TABLE IF NOT EXISTS record (record_id INTEGER PRIMARY KEY AUTOINCREMENT, tstamp INTEGER)")
+            sq.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, record_id INTEGER, FOREIGN KEY(record_id) REFERENCES record(record_id))")
             sq.execute("CREATE TABLE IF NOT EXISTS sql (tstamp INTEGER, commit_time REAL, commit_every INTEGER)")
 
     if addr is None:
@@ -228,7 +228,7 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
         log.info("Connected to " + addr)
 
         tstamp = int(time.time())
-        sq.execute("INSERT INTO record VALUES ( ?, ?)", (tstamp))
+        record_id  = sq.execute("INSERT INTO record VALUES ( ?)", (tstamp))
 
 
         if check_battery:
@@ -317,7 +317,7 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
                 continue
 
             # Push the data to the database
-            insert_db(sq, res, period)
+            insert_db(sq, record_id, res, period)
 
     if sqlfile is not None:
         # We close the database properly
