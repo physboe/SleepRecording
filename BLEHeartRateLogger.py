@@ -121,8 +121,8 @@ def insert_db(sq, res, period, min_ce=2, max_ce=60 * 2, grace_commit=2 / 3.):
     if "rr" in res:
         for rr in res["rr"]:
             sq.execute("INSERT INTO hrm VALUES (?, ?, ?)", (tstamp, res["hr"], rr))
-    else:
-        sq.execute("INSERT INTO hrm VALUES (?, ?, ?)", (tstamp, res["hr"], -1))
+    #else:
+    #    sq.execute("INSERT INTO hrm VALUES (?, ?, ?)", (tstamp, res["hr"], -1))
 
     # Instead of pushing the data to the disk each time, we commit only every
     # 'commit_every'.
@@ -183,7 +183,8 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
         # Init database connection
         sq = sqlite3.connect(sqlfile)
         with sq:
-            sq.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER)")
+            sq.execute("CREATE TABLE IF NOT EXISTS record (record_id INTEGER PRIMARY KEY, tstamp INTEGER)")
+            sq.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, FOREIGN KEY (fk_record_id) REFERENCES record (record_id))")
             sq.execute("CREATE TABLE IF NOT EXISTS sql (tstamp INTEGER, commit_time REAL, commit_every INTEGER)")
 
     if addr is None:
@@ -225,6 +226,10 @@ def main(addr=None, sqlfile=None, gatttool="gatttool", check_battery=False, hr_h
             break
 
         log.info("Connected to " + addr)
+
+        tstamp = int(time.time())
+        sq.execute("INSERT INTO record VALUES ( ?, ?)", (tstamp))
+
 
         if check_battery:
             gt.sendline("char-read-uuid 00002a19-0000-1000-8000-00805f9b34fb")
