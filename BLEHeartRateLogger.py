@@ -45,7 +45,7 @@ def parse_args():
 
     confpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "BLEHeartRateLogger.conf")
     if os.path.exists(confpath):
-        log.infor("Confing File found")
+        log.info("Confing File found")
         config = configparser.ConfigParser()
         config.read([confpath])
         config = dict(config.items("config"))
