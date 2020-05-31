@@ -5,10 +5,11 @@ import configparser
 
 
 def initLogging():
-    logging.basicConfig(format="%(asctime)s:%(module)s:%(funcName)s:%(levelname)s",level=logging.DEBUG)
+    logging.basicConfig(format="%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s",level=logging.DEBUG)
 
 
 def setLoggingStage(debug):
+    logging.debug("Debuggng: " + str(debug))
     if debug:
         logging.basicConfig(level=logging.DEBUG)
     else:
