@@ -10,7 +10,6 @@ def init():
     """
     Entry point for the command line interface
     """
-    cliu.initLogging()
     try:
         logging.info("command line interface")
         confpath = os.path.join("configs", "SuuntoLocal.conf")
