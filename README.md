@@ -12,7 +12,7 @@ python -m blehrmlogger [args]
 
 There is a help function
 ```sh
-  python -m blehrmlogger --help
+python -m blehrmlogger --help
 ```
 ### Code Usage
 ```python
