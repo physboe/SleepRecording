@@ -60,9 +60,9 @@ class BLEHearRateService:
                     break
 
             if hr_handle is None:
-                log.error("Couldn't find the heart rate measurement handle?!")
+                logging.error("Couldn't find the heart rate measurement handle?!")
                 raise HrmHandleNotFoundError(self.HRM_UUID)
-
+            logging.info("Handle: " + hr_handle)
             return hr_handle
 
         elif:
