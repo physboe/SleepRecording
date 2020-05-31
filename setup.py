@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="ble-rr-logger-physboe",
-    version="0.0.1",
+    version="1.0.0",
     author="Andre Boeni",
     author_email="boeni10@gmail.com",
     description="A little tool to read RR intervalls from BLE Device and save it",
