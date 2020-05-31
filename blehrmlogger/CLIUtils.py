@@ -5,7 +5,7 @@ import configparser
 
 
 def initLogging():
-    logging.basicConfig(format="%(filename)s:%(funcName)s:%(levelname)s",level=logging.DEBUG)
+    logging.basicConfig(format="%(asctime)s:%(module)s:%(funcName)s:%(levelname)s",level=logging.DEBUG)
 
 
 def setLoggingStage(debug):
@@ -21,7 +21,7 @@ def createParser():
     parser.add_argument("-g", metavar='PATH', type=str, help="gatttool path (default: system available)", default="gatttool")
     parser.add_argument("-o", metavar='FILE', type=str, help="Output filename of the database (default: none)")
     parser.add_argument("-H", metavar='HR_HANDLE', type=str, help="Gatttool handle used for HR notifications (default: none)")
-    parser.add_argument("-v", action='store_true', help="Verbose output")
+    parser.add_argument("-v", action='store_true', help="Verbose output", default=False)
     parser.add_argument("-d", action='store_true', help="Enable debug of gatttool")
     parser.add_argument("-t", metavar='TYPE', type=str, help="Connection type random or public")
     return parser
