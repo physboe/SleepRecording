@@ -1,7 +1,7 @@
 import os
 import logging
 import pexpect
-import
+import sys
 
 
 class BLEHearRateService:
@@ -12,11 +12,12 @@ class BLEHearRateService:
             raise RuntimeError("No Gatttool found")
         self.__debug = debug
         self.__run = True
+        self.__gatttoolpath = gatttoolpath
 
     def connectToDevice(self, deviceMAC, connectionType):
         while self.__run:
-            logging.info("Establishing connection to " + addr)
-            gt = pexpect.spawn(gatttool + " -b " + addr + " -t public --interactive")
+            logging.info("Establishing connection to " + deviceMAC)
+            gt = pexpect.spawn(self.__gatttoolpath + " -b " + deviceMAC + " -t " + connectionType +" --interactive")
             if self.__debug:
                 gt.logfile = sys.stdout ### ins logging
 
@@ -29,7 +30,7 @@ class BLEHearRateService:
                     gt.expect(r"\[LE\]>", timeout=30)
 
             except pexpect.TIMEOUT:
-                log.info("Connection timeout. Retrying.")
+                logging.info("Connection timeout. Retrying.")
                 continue
 
             break
