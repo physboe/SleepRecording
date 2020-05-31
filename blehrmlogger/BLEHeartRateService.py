@@ -6,7 +6,7 @@ import sys
 
 class BLEHearRateService:
 
-    self.HRM_UUID = "00002a37"
+    HRM_UUID = "00002a37"
 
     def __init__(self, gatttoolpath, recordimpl, debug):
         if gatttoolpath != "gatttool" and not os.path.exists(gatttoolpath):
