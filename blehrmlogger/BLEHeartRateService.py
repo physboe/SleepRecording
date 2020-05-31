@@ -60,7 +60,7 @@ class BLEHearRateService:
             self.__recording = True
 
             notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
-            logging.info("Listen : " + notification_expect)
+            logging.debug("Listen : " + notification_expect)
             while self.__run:
                 try:
                     self.__gatttool.expect(notification_expect, timeout=10)
@@ -68,7 +68,7 @@ class BLEHearRateService:
                     data = map(lambda x: int(x, 16), datahex.split(b' '))
                     result = self.__interpret(list(data))
                     self.__sendToDataLogger(result)
-                    logging.info("Handle Notification: " + str(result))
+                    logging.debug("Handle Notification: " + str(result))
                 except pexpect.TIMEOUT:
                     logging.warn("Connection lost")
 
@@ -144,7 +144,7 @@ class BLEHearRateService:
         if hr_handle is None:
             logging.error("Couldn't find the heart rate measurement handle?!")
             raise HrmHandleNotFoundError(self.HRM_UUID)
-        logging.info("Found Handle: " + hr_handle)
+        logging.debug("Found Handle: " + hr_handle)
         return hr_handle, hr_handle_ctl
 
     def __interpret(self, data):

@@ -12,7 +12,7 @@ def setLoggingStage(debug):
     if debug:
         logging.basicConfig(level=logging.DEBUG)
     else:
-        logging.basicConfig(level=logging.WARNING)
+        logging.basicConfig(level=logging.INFO)
 
 
 def createParser():
@@ -31,7 +31,7 @@ def loadConfigParameter(confpath):
     parser = createParser()
 
     if os.path.exists(confpath):
-        logging.info("Config File found: " + os.path.abspath(confpath))
+        logging.debug("Config File found: " + os.path.abspath(confpath))
         config = configparser.ConfigParser()
         config.read([confpath])
         config = dict(config.items("config"))

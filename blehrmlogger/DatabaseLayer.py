@@ -33,7 +33,7 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         self.__db.execute(self.SQL_INSERT_HRM_DATA, (tstamp, hr, rr, sensor_contact, recordsession_id))
         self.__counter = self.__counter + 1
         if self.__counter >= self.COMMIT_COUNT:
-            logging.info("Commit hrm_data")
+            logging.debug("Commit hrm_data")
             self.__db.commit()
             self.__counter = 0
 
