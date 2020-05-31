@@ -1,5 +1,5 @@
 import unittest
-from blehrmlogger import ConfigLoader as configloader
+from blehrmlogger import CLIUtils as configloader
 import os
 
 

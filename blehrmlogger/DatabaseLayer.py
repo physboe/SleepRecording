@@ -10,8 +10,6 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         db = self.__connectToDb()
         db.execute("CREATE TABLE IF NOT EXISTS recordsession (recordsession_id INTEGER PRIMARY KEY AUTOINCREMENT, start INTEGER, end INTEGER)")
         db.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, sensor_context TEXT , fk_recordsession_id INTEGER, FOREIGN KEY(fk_recordsession_id) REFERENCES recordsession(recordsession_id))")
-        db.execute("CREATE TABLE IF NOT EXISTS sql (tstamp INTEGER, commit_time REAL, commit_every INTEGER)")
-        logging.info("Database created")
         self.__closeDB(db)
 
     def __updateRecordSession(self, recordsession_id, tstamp):
@@ -51,6 +49,7 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
 
     def stopRecordSession(self, recordSession, tstamp):
         self.__updateRecordSession(recordSession.getId(), tstamp)
+        self.counter = 0
         self.db.commit()
         self.db.close()
         self.db = None

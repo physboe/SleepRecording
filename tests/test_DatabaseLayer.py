@@ -16,14 +16,19 @@ class TestDatabaseLayer(unittest.TestCase):
     def test_insert_recordsession(self):
             try:
                 db = dbl.DatabaseLayer("test.db")
-                db.startRecordSession(self.__getTimestamp())
+                recordSession = db.startRecordSession(self.__getTimestamp())
+                db.stopRecordSession(recordSession, self.__getTimestamp())
                 db = sqlite3.connect("test.db")
-                self.assertEqual(len(db.execute("SELECT * from recordsession").fetchall()),1 )
+                laenge = len(
+                            db.execute(
+                            "SELECT * from recordsession where recordsession_id = "
+                            + str(recordSession.getId())).fetchall())
+                self.assertEqual(laenge, 1)
             except Exception as e:
                 self.fail(e)
                 logging.exception(e, exc_info=True)
 
-    def test_insert_recordsession(self):
+    def test_insert_five_recordsession(self):
             try:
                 db = dbl.DatabaseLayer("test.db")
                 id = db.startRecordSession(self.__getTimestamp())
@@ -32,9 +37,42 @@ class TestDatabaseLayer(unittest.TestCase):
                 db.saveHrmData(id, 85, 722, self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.stopRecordSession(id, self.__getTimestamp())
 
                 db = sqlite3.connect("test.db")
-                self.assertEqual(len(db.execute("SELECT * from hrm").fetchall()), 5)
+                self.assertEqual(len(db.execute("SELECT * from hrm where hrm.fk_recordsession_id=" + str(id.getId())).fetchall()), 5)
+            except Exception as e:
+                self.fail(e)
+                logging.exception(e, exc_info=True)
+
+    def test_insert_six_recordsession(self):
+            try:
+                db = dbl.DatabaseLayer("test.db")
+                id = db.startRecordSession(self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.stopRecordSession(id, self.__getTimestamp())
+
+                db = sqlite3.connect("test.db")
+                self.assertEqual(len(db.execute("SELECT * from hrm where hrm.fk_recordsession_id=" + str(id.getId())).fetchall()), 6)
+            except Exception as e:
+                self.fail(e)
+                logging.exception(e, exc_info=True)
+
+    def test_insert_two_recordsession(self):
+            try:
+                db = dbl.DatabaseLayer("test.db")
+                id = db.startRecordSession(self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.stopRecordSession(id, self.__getTimestamp())
+
+                db = sqlite3.connect("test.db")
+                self.assertEqual(len(db.execute("SELECT * from hrm where hrm.fk_recordsession_id=" + str(id.getId())).fetchall()), 2)
             except Exception as e:
                 self.fail(e)
                 logging.exception(e, exc_info=True)

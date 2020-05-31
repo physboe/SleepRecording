@@ -27,7 +27,6 @@ class BLEHearRateService:
         self.__setInitStat()
         self.__run = True
 
-
     def connectToDevice(self, deviceMAC, connectionType):
         if self.__connected:
             logging.warning("Device already connected")
