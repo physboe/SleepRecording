@@ -6,15 +6,21 @@ import logging
 class DatabaseLayer(bleservice.RecordingLoggerInterface):
 
     def __init__(self, databaseurl):
-        self.db = sqlite3.connect(databaseurl)
-        self.db.execute("CREATE TABLE IF NOT EXISTS recordsession (recordsession_id INTEGER PRIMARY KEY AUTOINCREMENT, tstamp INTEGER)")
-        self.db.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, sensor_context TEXT , fk_recordsession_id INTEGER, FOREIGN KEY(fk_recordsession_id) REFERENCES recordsession(recordsession_id))")
-        self.db.execute("CREATE TABLE IF NOT EXISTS sql (tstamp INTEGER, commit_time REAL, commit_every INTEGER)")
-        self.counter = 0
+        self.__databaseurl = databaseurl
+        db = self.__connectToDb()
+        db.execute("CREATE TABLE IF NOT EXISTS recordsession (recordsession_id INTEGER PRIMARY KEY AUTOINCREMENT, start INTEGER, end INTEGER)")
+        db.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, sensor_context TEXT , fk_recordsession_id INTEGER, FOREIGN KEY(fk_recordsession_id) REFERENCES recordsession(recordsession_id))")
+        db.execute("CREATE TABLE IF NOT EXISTS sql (tstamp INTEGER, commit_time REAL, commit_every INTEGER)")
         logging.info("Database created")
+        self.__closeDB(db)
+
+    def __updateRecordSession(self, recordsession_id, tstamp):
+        cru = self.db.execute("UPDATE recordsession SET stop = ? where recordsession_id = ?", (tstamp,recordsession_id))
+        self.db.commit()
+        return cru.lastrowid
 
     def __insertRecordSession(self, tstamp):
-        cru = self.db.execute("INSERT INTO recordsession (tstamp) VALUES (?)", (tstamp,))
+        cru = self.db.execute("INSERT INTO recordsession (start) VALUES (?)", (tstamp,))
         self.db.commit()
         return cru.lastrowid
 
@@ -25,16 +31,29 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
             self.db.commit()
             self.counter = 0
 
+    def __connectToDb(self):
+        db = sqlite3.connect(self.__databaseurl)
+        logging.info("Connected to database")
+        return db
+
+    def __closeDB(self, db):
+        db.commit()
+        db.close()
+        logging.info("Database closed")
+
     def startRecordSession(self, tstamp):
+        self.db = self.__connectToDb()
+        self.counter = 0
         return DaoRecordSession(self.__insertRecordSession(tstamp))
 
     def saveHrmData(self, recordSession, hr, rr, tstamp):
         self.___insertHrmData(recordSession.getId(), hr, rr, tstamp)
 
-    def stopRecordSession(self):
+    def stopRecordSession(self, recordSession, tstamp):
+        self.__updateRecordSession(recordSession.getId(), tstamp)
         self.db.commit()
         self.db.close()
-        logging.info("Database closed")
+        self.db = None
 
 
 class DaoRecordSession(bleservice.RecordSession):

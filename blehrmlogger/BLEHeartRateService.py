@@ -24,10 +24,9 @@ class BLEHearRateService:
         self.__debug = debug
         self.__gatttoolpath = gatttoolpath
 
+        self.__setInitStat()
         self.__run = True
-        self.__connected = False
-        self.__registered = False
-        self.__recording = False
+
 
     def connectToDevice(self, deviceMAC, connectionType):
         if self.__connected:
@@ -72,6 +71,7 @@ class BLEHearRateService:
                     logging.info("Handle Notification: " + str(result))
                 except pexpect.TIMEOUT:
                     logging.warn("Connection lost")
+
                     raise ConnectionLostError("Connection lost")
 
         else:
@@ -89,7 +89,7 @@ class BLEHearRateService:
 
     def stopRecording(self):
         if self.__recording:
-            self.__recordSession.stopRecordSession(self.__getTimeStamp())
+            self.__logger.stopRecordSession(self.__recordSession, self.__getTimeStamp())
             self.__recording = False
 
     def close(self):
@@ -100,9 +100,19 @@ class BLEHearRateService:
         if self.__connected:
             self.__gatttool.sendline("quit")
             self.__gatttool.wait()
-            self.__connected = False
-            self.__registered = False
+
+        self.__setInitStat()
         logging.info("Connection closing")
+
+    def __setInitStat(self):
+        self.__run = False
+        self.__connected = False
+        self.__registered = False
+        self.__recording = False
+        self.__recordSession = None
+        self.__logger = None
+        self.__handle = None
+
 
     def __getTimeStamp(self):
         return int(time.time())

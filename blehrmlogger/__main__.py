@@ -21,14 +21,13 @@ def init():
         try:
             gatttoolutil.connectToDevice(args.m, args.t)
             gatttoolutil.registeringToHrHandle()
-            gatttoolutil.listenToNotification(databaselayer)
+            gatttoolutil.startRecording(databaselayer)
         except KeyboardInterrupt as key:
             logging.exception(key, exc_info=True)
 
         except Exception as e:
             logging.exception(e, exc_info=True)
         finally:
-            databaselayer.close()
             gatttoolutil.close()
 
     except Exception as e:
