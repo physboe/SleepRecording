@@ -2,4 +2,5 @@
 *.db
 __pycache__
 build
-ble_rr_logger_physboe.egg-info
+dist
+blerrlogger_physboe.egg-info
