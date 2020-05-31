@@ -19,8 +19,8 @@ def init():
         loggingutils.setLoggingStage(args.v)
         databaselayer = dbl.DatabaseLayer(args.o)
         try:
-
-            gatttoolutil = ble.BLEHearRateService(args.g, databaselayer)
+            gatttoolutil = ble.BLEHearRateService(args.g, databaselayer, args.d)
+            gatttoolutil.connectToDevice(args.m, args.t)
         except Exception as e:
             logging.exception(e, exc_info=True)
             sys.exit(1)
