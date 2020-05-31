@@ -12,9 +12,9 @@ def setLoggingStage(debug):
     if debug:
         stage = logging.DEBUG
     else:
-        stage = logging.DEBUG
+        stage = logging.INFO
 
-    logging.basicConfig(format=LOGGING_FORMAT, level=stage)
+    logging.basicConfig(format=LOGGING_FORMAT, level=stage, force=True)
 
 
 def createParser():
