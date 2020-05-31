@@ -47,7 +47,7 @@ class BLEHearRateService:
     def listenToNotification(self, Listener):
         if self.__connected and self.__registered:
 
-            notification_expect = "Notification handle = " + self.__hr_handle + " value: ([0-9a-f ]+)"
+            notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
 
             while self.__run:
                 try:
