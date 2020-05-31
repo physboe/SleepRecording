@@ -3,17 +3,18 @@ import logging
 import os
 import configparser
 
+LOGGING_FORMAT = "%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s"
 
 def initLogging():
-    logging.basicConfig(format="%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s",level=logging.DEBUG)
+    logging.basicConfig(format=LOGGING_FORMAT, level=logging.DEBUG)
 
 
 def setLoggingStage(debug):
     logging.debug("Debuggng: " + str(debug))
     if debug:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(format=LOGGING_FORMAT, level=logging.DEBUG)
     else:
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO)
 
 
 def createParser():
