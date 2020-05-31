@@ -18,7 +18,9 @@ class BLEHearRateService:
         self.__connected = False
 
     def connectToDevice(self, deviceMAC, connectionType):
-        if not self.__connected:
+        if (self.__connected):
+            logging.warning("Device already connected")
+        else:
             while self.__run:
                 logging.info("Establishing connection to " + deviceMAC)
                 self.__gatttool = pexpect.spawn(self.__gatttoolpath + " -b " + deviceMAC + " -t " + connectionType +" --interactive")
@@ -40,20 +42,18 @@ class BLEHearRateService:
                 self.__connected = True
                 logging.info("Connected to " + deviceMAC)
                 break
-        elif:
-            logging.warning("Device already connected")
 
     def registeringToHrHandle(self):
         if self.__connected:
             self.__gatttool.sendline("char-desc")
-            while 1:
+            while self.__run:
                 try:
                     self.__getttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
                 except pexpect.TIMEOUT:
                     break
 
-                handle = gt.match.group(1).decode()
-                uuid = gt.match.group(2).decode()
+                handle = self.__getttool.match.group(1).decode()
+                uuid = self.__getttool.match.group(2).decode()
 
                 if uuid == self.HRM_UUID:
                     hr_handle = handle
@@ -65,7 +65,7 @@ class BLEHearRateService:
             logging.info("Handle: " + hr_handle)
             return hr_handle
 
-        elif:
+        else:
             raise NoDeviceConnected()
 
     def close(self):
