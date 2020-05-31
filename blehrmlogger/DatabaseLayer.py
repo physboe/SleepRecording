@@ -30,10 +30,8 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         return cru.lastrowid
 
     def ___insertHrmData(self, recordsession_id, hr, rr, sensor_contact, tstamp):
-        logging.info("Commit hrm_data")
         self.__db.execute(self.SQL_INSERT_HRM_DATA, (tstamp, hr, rr, sensor_contact, recordsession_id))
         self.__counter = self.__counter + 1
-        logging.info("Commit counter: " + str(self.__counter))
         if self.__counter >= self.COMMIT_COUNT:
             logging.info("Commit hrm_data")
             self.__db.commit()
