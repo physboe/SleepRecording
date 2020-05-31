@@ -14,10 +14,11 @@ There is a help function
   python -m blehrmlogger --help
 
 ### Code Usage
-
+```python
     databaselayer = dbl.DatabaseLayer("database.data")
     gatttoolutil = ble.BLEHearRateService("gatttool", false)
     gatttoolutil.connectToDevice("[you device mac]", "public")
     gatttoolutil.registeringToHrHandle()
     gatttoolutil.startRecording(databaselayer)
     gatttoolutil.close()
+```
