@@ -6,6 +6,8 @@ import sys
 
 class BLEHearRateService:
 
+    self.HRM_UUID = "00002a37"
+
     def __init__(self, gatttoolpath, recordimpl, debug):
         if gatttoolpath != "gatttool" and not os.path.exists(gatttoolpath):
             logging.critical("Couldn't find gatttool path!")
@@ -38,14 +40,45 @@ class BLEHearRateService:
                 self.__connected = True
                 logging.info("Connected to " + deviceMAC)
                 break
+        elif:
+            logging.warning("Device already connected")
 
     def registeringToHrHandle(self):
         if self.__connected:
             self.__gatttool.sendline("char-desc")
+            while 1:
+                try:
+                    self.__getttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+                except pexpect.TIMEOUT:
+                    break
 
+                handle = gt.match.group(1).decode()
+                uuid = gt.match.group(2).decode()
+
+                if uuid == self.HRM_UUID:
+                    hr_handle = handle
+                    break
+
+            if hr_handle is None:
+                log.error("Couldn't find the heart rate measurement handle?!")
+                raise HrmHandleNotFoundError(self.HRM_UUID)
+
+            return hr_handle
+
+        elif:
+            raise NoDeviceConnected()
 
     def close(self):
         self.__run = False
         if self.__connected:
             self.__gatttool.sendline("exit")
+            self.__connected = False
         logging.info("Connection closing")
+
+
+class HrmHandleNotFoundError(Exception):
+    pass
+
+
+class NoDeviceConnected(Exception):
+    pass

@@ -21,6 +21,7 @@ def init():
         gatttoolutil = ble.BLEHearRateService(args.g, databaselayer, args.d)
         try:
             gatttoolutil.connectToDevice(args.m, args.t)
+            gatttoolutil.registeringToHrHandle()
         except KeyboardInterrupt as key:
             logging.exception(key, exc_info=True)
             gatttoolutil.close()
@@ -29,6 +30,7 @@ def init():
             logging.exception(e, exc_info=True)
         finally:
             databaselayer.close()
+            gatttoolutil.close()
 
     except Exception as e:
         logging.exception(e, exc_info=True)
