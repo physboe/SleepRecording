@@ -1,5 +1,5 @@
 *.pyc
 *.db
 __pycache__
-__build__
-ble_rr_logger_physioboe.egg-info
+build
+ble_rr_logger_physboe.egg-info
