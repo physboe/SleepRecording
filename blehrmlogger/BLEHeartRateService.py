@@ -26,9 +26,9 @@ class BLEHearRateService:
                 logging.info("Establishing connection to " + deviceMAC)
                 self.__gatttool = pexpect.spawn(self.__gatttoolpath + " -b " + deviceMAC + " -t " + connectionType +" --interactive")
                 if self.__debug:
-                    self.__gatttool.logfile = sys.stdout ### ins logging
+                    self.__gatttool.logfile = sys.stdout.buffer ### ins logging
 
-                self.__gatttool.expect("[LE]>")
+                self.__gatttool.expect(r"\[LE\]>")
                 self.__gatttool.sendline("connect")
 
                 try:
