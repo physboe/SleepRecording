@@ -6,6 +6,7 @@ import configparser
 LOGGING_FORMAT = "%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s"
 
 def setLoggingStage(debug):
+    print("setloggingstage")
     logging.debug("Debuggng: " + str(debug))
     if debug:
         logging.basicConfig(format=LOGGING_FORMAT, level=logging.DEBUG)
