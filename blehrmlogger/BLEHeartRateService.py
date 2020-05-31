@@ -65,11 +65,11 @@ class BLEHearRateService:
 
     def registeringToHrHandle(self):
         if self.__connected:
-            handle = self.__lookingForHandle()
-            self.__gatttool.sendline("char-write-req " + handle + " 0100")
+            hr_handle, hr_handle_ctl = self.__lookingForHandle()
+            self.__gatttool.sendline("char-write-req " + hr_handle_ctl + " 0100")
             self.__registered = True
-            self.__handle = handle
-            logging.info("Registered to Handle " + handle)
+            self.__handle = hr_handle
+            logging.info("Registered to Handle " + hr_handle)
         else:
             raise NoDeviceConnectedError()
 
@@ -85,16 +85,16 @@ class BLEHearRateService:
             uuid = self.__gatttool.match.group(2).decode()
 
             if uuid == self.HRM_UUID:
-                self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
-                handle = self.__gatttool.match.group(1).decode()
                 hr_handle = handle
+                self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+                hr_handle_ctl = self.__gatttool.match.group(1).decode()
                 break
 
         if hr_handle is None:
             logging.error("Couldn't find the heart rate measurement handle?!")
             raise HrmHandleNotFoundError(self.HRM_UUID)
         logging.info("Found Handle: " + hr_handle)
-        return hr_handle
+        return hr_handle, hr_handle_ctl
 
     def close(self):
         self.__run = False
