@@ -5,16 +5,16 @@ from blehrmlogger import DatabaseLayer as dbl
 import os
 import sys
 
+LOGGING_FORMAT = "%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s"
 
 def init():
     """
     Entry point for the command line interface
     """
     try:
-        logging.info("command line interface")
+        logging.basicConfig(format=LOGGING_FORMAT, level=logging.DEBUG, force=True)
         confpath = os.path.join("configs", "SuuntoLocal.conf")
         args = cliu.loadConfigParameter(confpath)
-        cliu.setLoggingStage(args.v)
         databaselayer = dbl.DatabaseLayer(args.o)
         gatttoolutil = ble.BLEHearRateService(args.g, args.d)
         try:

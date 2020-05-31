@@ -3,19 +3,6 @@ import logging
 import os
 import configparser
 
-LOGGING_FORMAT = "%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s"
-
-
-def setLoggingStage(debug):
-    print("setloggingstage")
-
-    if debug:
-        stage = logging.DEBUG
-    else:
-        stage = logging.INFO
-
-    logging.basicConfig(format=LOGGING_FORMAT, level=stage, force=True)
-
 
 def createParser():
     parser = argparse.ArgumentParser(description="Bluetooth heart rate monitor data logger")
@@ -33,7 +20,7 @@ def loadConfigParameter(confpath):
     parser = createParser()
 
     if os.path.exists(confpath):
-#        logging.debug("Config File found: " + os.path.abspath(confpath))
+        logging.debug("Config File found: " + os.path.abspath(confpath))
         config = configparser.ConfigParser()
         config.read([confpath])
         config = dict(config.items("config"))
@@ -44,7 +31,7 @@ def loadConfigParameter(confpath):
         err = False
         for key in config.keys():
             if key not in args:
-    #            logging.error("Configuration file error: invalid key '" + key + "'.")
+                logging.error("Configuration file error: invalid key '" + key + "'.")
                 err = True
         if err:
             raise KeyError("Configuration file error'")
