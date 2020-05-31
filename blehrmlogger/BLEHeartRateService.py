@@ -85,6 +85,8 @@ class BLEHearRateService:
             uuid = self.__gatttool.match.group(2).decode()
 
             if uuid == self.HRM_UUID:
+                self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+                handle = self.__gatttool.match.group(1).decode()
                 hr_handle = handle
                 break
 
