@@ -16,7 +16,7 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         self.__databaseurl = databaseurl
         db = self.__connectToDb()
         db.execute(self.SQL_CREATE_RECORDSESSION)
-        db.execute(self.SQL_CREATE_RECORDSESSION)
+        db.execute(self.SQL_CREATE_HRM_DATA)
         self.__closeDB(db)
 
     def __updateRecordSession(self, recordsession_id, tstamp):
