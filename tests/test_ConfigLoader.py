@@ -1,5 +1,5 @@
 import unittest
-import ble_rr_Logger.ConfigLoader as configloader
+import blehrmlogger.ConfigLoader as configloader
 import os
 
 

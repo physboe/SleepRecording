@@ -1,8 +1,8 @@
 import logging
-from ble_rr_logger import ConfigLoader as config
-from ble_rr_logger import LoggingUtils as loggingutils
-from ble_rr_logger import BLEHeartRateService as ble
-from ble_rr_logger import DatabaseLayer as dbl
+from blehrmlogger import ConfigLoader as config
+from blehrmlogger import LoggingUtils as loggingutils
+from blehrmlogger import BLEHeartRateService as ble
+from blehrmlogger import DatabaseLayer as dbl
 import os
 import sys
 

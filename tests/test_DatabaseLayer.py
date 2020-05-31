@@ -1,4 +1,4 @@
-import ble_rr_Logger.DatabaseLayer as dbl
+import blehrmlogger.DatabaseLayer as dbl
 import unittest
 import sqlite3
 import time

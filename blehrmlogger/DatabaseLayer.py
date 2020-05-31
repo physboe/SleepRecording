@@ -1,6 +1,6 @@
 import sqlite3
 import time
-from ble_rr_logger import RecordingLoggerInterface as ri
+from blehrmlogger import RecordingLoggerInterface as ri
 import logging
 
 
