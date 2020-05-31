@@ -38,3 +38,4 @@ class BLEHearRateService:
 
     def close(self):
         self.__run = False
+        logging.info("Clonntion closing")
