@@ -5,8 +5,8 @@ def initLogging():
     logging.basicConfig(level=logging.DEBUG)
 
 
-def setLoggingStage(args):
-    if args.v:
+def setLoggingStage(debug):
+    if debug:
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.INFO)

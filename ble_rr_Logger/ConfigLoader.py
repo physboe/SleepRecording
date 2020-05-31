@@ -20,9 +20,8 @@ def createParser():
 def loadConfigParameter(confpath):
     parser = createParser()
 
-    logging.info("Config path: '" + confpath + "'")
     if os.path.exists(confpath):
-        logging.info("Confing File found")
+        logging.info("Config File found: " + os.path.abspath(confpath))
         config = configparser.ConfigParser()
         config.read([confpath])
         config = dict(config.items("config"))
@@ -31,7 +30,7 @@ def loadConfigParameter(confpath):
         # configuration of the parser.
         args = vars(parser.parse_args([]))
         err = False
-        for key in config.iterkeys():
+        for key in config.keys():
             if key not in args:
                 logging.error("Configuration file error: invalid key '" + key + "'.")
                 err = True
