@@ -13,21 +13,21 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         self.__closeDB(db)
 
     def __updateRecordSession(self, recordsession_id, tstamp):
-        cru = self.db.execute("UPDATE recordsession SET end = ? where recordsession_id = ?", (tstamp,recordsession_id))
-        self.db.commit()
+        cru = self.__db.execute("UPDATE recordsession SET end = ? where recordsession_id = ?", (tstamp,recordsession_id))
+        self.__db.commit()
         return cru.lastrowid
 
     def __insertRecordSession(self, tstamp):
-        cru = self.db.execute("INSERT INTO recordsession (start) VALUES (?)", (tstamp,))
-        self.db.commit()
+        cru = self.__db.execute("INSERT INTO recordsession (start) VALUES (?)", (tstamp,))
+        self.__db.commit()
         return cru.lastrowid
 
     def ___insertHrmData(self, recordsession_id, hr, rr, tstamp):
-        self.db.execute("INSERT INTO hrm (tstamp, hr, rr, fk_recordsession_id) VALUES (?, ?, ?, ?)", (tstamp, hr, rr, recordsession_id))
+        self.__db.execute("INSERT INTO hrm (tstamp, hr, rr, fk_recordsession_id) VALUES (?, ?, ?, ?)", (tstamp, hr, rr, recordsession_id))
         self.counter = self.counter + 1
         if self.counter >= 5:
             logging.info("Commit hrm_data")
-            self.db.commit()
+            self.__db.commit()
             self.counter = 0
 
     def __connectToDb(self):
@@ -41,7 +41,7 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         logging.info("Database closed")
 
     def startRecordSession(self, tstamp):
-        self.db = self.__connectToDb()
+        self.__db = self.__connectToDb()
         self.counter = 0
         return DaoRecordSession(self.__insertRecordSession(tstamp))
 
@@ -51,9 +51,8 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
     def stopRecordSession(self, recordSession, tstamp):
         self.__updateRecordSession(recordSession.getId(), tstamp)
         self.counter = 0
-        self.db.commit()
-        self.db.close()
-        self.db = None
+        self.__closeDB(self.__db)
+        self.__db = None
 
 
 class DaoRecordSession(bleservice.RecordSession):
