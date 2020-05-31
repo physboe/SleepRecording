@@ -18,12 +18,15 @@ def init():
         args = config.loadConfigParameter(confpath)
         loggingutils.setLoggingStage(args.v)
         databaselayer = dbl.DatabaseLayer(args.o)
+        gatttoolutil = ble.BLEHearRateService(args.g, databaselayer, args.d)
         try:
-            gatttoolutil = ble.BLEHearRateService(args.g, databaselayer, args.d)
             gatttoolutil.connectToDevice(args.m, args.t)
+        except KeyboardInterrupt as key:
+            logging.exception(key, exc_info=True)
+            gatttoolutil.close()
+
         except Exception as e:
             logging.exception(e, exc_info=True)
-            sys.exit(1)
         finally:
             databaselayer.close()
 

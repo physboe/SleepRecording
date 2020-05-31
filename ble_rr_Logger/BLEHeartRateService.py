@@ -17,20 +17,24 @@ class BLEHearRateService:
     def connectToDevice(self, deviceMAC, connectionType):
         while self.__run:
             logging.info("Establishing connection to " + deviceMAC)
-            gt = pexpect.spawn(self.__gatttoolpath + " -b " + deviceMAC + " -t " + connectionType +" --interactive")
+            self.__gatttool = pexpect.spawn(self.__gatttoolpath + " -b " + deviceMAC + " -t " + connectionType +" --interactive")
             if self.__debug:
-                gt.logfile = sys.stdout ### ins logging
+                self.__gatttool.logfile = sys.stdout ### ins logging
 
-            gt.expect(r"\[LE\]>")
-            gt.sendline("connect")
+            self.__gatttool.expect(r"\[LE\]>")
+            self.__gatttool.sendline("connect")
 
             try:
-                i = gt.expect(["Connection successful.", r"\[CON\]"], timeout=30)
+                i = self.__gatttool.expect(["Connection successful.", r"\[CON\]"], timeout=30)
                 if i == 0:
-                    gt.expect(r"\[LE\]>", timeout=30)
+                    self.__gatttool.expect(r"\[LE\]>", timeout=30)
 
             except pexpect.TIMEOUT:
                 logging.info("Connection timeout. Retrying.")
                 continue
 
+            logging.info("Connected to " + deviceMAC)
             break
+
+    def close(self):
+        self.__run = False
