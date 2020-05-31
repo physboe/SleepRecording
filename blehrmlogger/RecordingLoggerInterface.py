@@ -1,26 +1,26 @@
-#import abc
+import abc
 
 
-class RecordingLoggerInterface():
+class RecordingLoggerInterface(abc.ABC):
 
-#    @abc.abstractclassmethod
+    @abc.abstractclassmethod
     def __init__(self):
         pass
 
-    #@abc.abstractclassmethod
+    @abc.abstractclassmethod
     def saveRecordSession(self, tstamp):
         pass
 
-#    @abc.abstractclassmethod
+    @abc.abstractclassmethod
     def saveHrmData(self, recordSession, hr, rr, tstamp):
         pass
 
-    #@abc.abstractclassmethod
+    @abc.abstractclassmethod
     def close(self):
         pass
 
 
-class RecordSession():
+class RecordSession(abc.ABC):
 
     def __init__(self):
         pass
