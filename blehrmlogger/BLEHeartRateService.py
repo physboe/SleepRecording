@@ -52,8 +52,8 @@ class BLEHearRateService:
                 except pexpect.TIMEOUT:
                     break
 
-                handle = self.__getttool.match.group(1).decode()
-                uuid = self.__getttool.match.group(2).decode()
+                handle = self.__gatttool.match.group(1).decode()
+                uuid = self.__gatttool.match.group(2).decode()
 
                 if uuid == self.HRM_UUID:
                     hr_handle = handle
