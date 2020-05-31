@@ -57,7 +57,7 @@ class BLEHearRateService:
                     result = self.__interpret(list(data))
                     logging.info("Handle Notification: " + result)
                 except pexpect.TIMEOUT:
-                    logging.warn("Connection lost with ")
+                    logging.warn("Connection lost ")
                     raise ConnectionLostError("Connection lost with ")
 
         else:
