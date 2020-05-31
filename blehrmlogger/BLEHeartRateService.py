@@ -48,7 +48,7 @@ class BLEHearRateService:
             self.__gatttool.sendline("char-desc")
             while self.__run:
                 try:
-                    self.__getttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+                    self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
                 except pexpect.TIMEOUT:
                     break
 
