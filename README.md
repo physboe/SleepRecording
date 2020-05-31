@@ -6,8 +6,9 @@ This is a simple tool to read R-R Interval from BLE Device and store it in a SQL
 This tool can be used from a terminal or as a module in your source code
 
 ### Terminal Usage
-
-  python -m blehrmlogger [args]
+```sh
+python -m blehrmlogger [args]
+```
 
 There is a help function
 
@@ -15,10 +16,10 @@ There is a help function
 
 ### Code Usage
 ```python
-    databaselayer = dbl.DatabaseLayer("database.data")
-    gatttoolutil = ble.BLEHearRateService("gatttool", false)
-    gatttoolutil.connectToDevice("[you device mac]", "public")
-    gatttoolutil.registeringToHrHandle()
-    gatttoolutil.startRecording(databaselayer)
-    gatttoolutil.close()
+  databaselayer = dbl.DatabaseLayer("database.data")
+  gatttoolutil = ble.BLEHearRateService("gatttool", false)
+  gatttoolutil.connectToDevice("[you device mac]", "public")
+  gatttoolutil.registeringToHrHandle()
+  gatttoolutil.startRecording(databaselayer)
+  gatttoolutil.close()
 ```
