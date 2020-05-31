@@ -43,7 +43,7 @@ def parse_args():
     parser.add_argument("-v", action='store_true', help="Verbose output")
     parser.add_argument("-d", action='store_true', help="Enable debug of gatttool")
 
-    confpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "BLEHeartRateLogger.conf")
+    confpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../configs/BLEHeartRateLogger.conf")
     log.info("Config path: '" + confpath + "'")
     if os.path.exists(confpath):
         log.info("Confing File found")
