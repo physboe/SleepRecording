@@ -26,13 +26,13 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
             self.db.commit()
             self.counter = 0
 
-    def saveRecordSession(self, tstamp):
+    def startRecordSession(self, tstamp):
         return DaoRecordSession(self.__insertRecordSession(tstamp))
 
     def saveHrmData(self, recordSession, hr, rr, tstamp):
         self.___insertHrmData(recordSession.getId(), hr, rr, tstamp)
 
-    def close(self):
+    def stopRecordSession(self):
         self.db.commit()
         self.db.close()
         logging.info("Database closed")

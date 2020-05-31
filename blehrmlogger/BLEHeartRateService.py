@@ -3,21 +3,31 @@ import logging
 import pexpect
 import sys
 import abc
+import time
 
 
 class BLEHearRateService:
 
     HRM_UUID = "00002a37"
+    RESULT_RR_INTERVAL_AVAILABLE = "rr_avb"
+    RESULT_RR_INTERVAL = "rr"
+    RESULT_HR = "hr"
+    RESULT_SENSOR_CONTACT = "sensor_cont"
+    RESULT_EE_STATUS = "ee_status"
+    RESULT_EE = "ee"
+    RESULT_HRV_UINT8 = "hrv_uint8"
 
     def __init__(self, gatttoolpath, recordimpl, debug):
         if gatttoolpath != "gatttool" and not os.path.exists(gatttoolpath):
             logging.critical("Couldn't find gatttool path!")
             raise RuntimeError("No Gatttool found")
         self.__debug = debug
-        self.__run = True
         self.__gatttoolpath = gatttoolpath
+
+        self.__run = True
         self.__connected = False
         self.__registered = False
+        self.__recording = False
 
     def connectToDevice(self, deviceMAC, connectionType):
         if self.__connected:
@@ -45,8 +55,11 @@ class BLEHearRateService:
                 logging.info("Connected to " + deviceMAC)
                 break
 
-    def listenToNotification(self, logger):
+    def startRecording(self, logger):
         if self.__connected and self.__registered:
+            self.__logger = logger
+            self.__recordSession = logger.startRecordSession(self.__getTimeStamp())
+            self.__recording = True
 
             notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
             logging.info("Listen : " + notification_expect)
@@ -58,8 +71,8 @@ class BLEHearRateService:
                     result = self.__interpret(list(data))
                     logging.info("Handle Notification: " + str(result))
                 except pexpect.TIMEOUT:
-                    logging.warn("Connection lost ")
-                    raise ConnectionLostError("Connection lost with ")
+                    logging.warn("Connection lost")
+                    raise ConnectionLostError("Connection lost")
 
         else:
             raise NoDeviceConnectedError("No Device connected or no Handle registered")
@@ -74,7 +87,15 @@ class BLEHearRateService:
         else:
             raise NoDeviceConnectedError()
 
+    def stopRecording(self):
+        if self.__recording:
+            self.__recordSession.stopRecordSession(self.__getTimeStamp())
+            self.__recording = False
+
     def close(self):
+        if self.__recording:
+            self.stopRecording()
+
         self.__run = False
         if self.__connected:
             self.__gatttool.sendline("quit")
@@ -82,6 +103,16 @@ class BLEHearRateService:
             self.__connected = False
             self.__registered = False
         logging.info("Connection closing")
+
+    def __getTimeStamp(self):
+        return int(time.time())
+
+    def __sendToDataLogger(self, result):
+        if result[self.RESULT_RR_INTERVAL_AVAILABLE]:
+            for rrInterval in result[self.RESULT_RR_INTERVAL]:
+                self.__logger.saveHrmData(self.__recordSession, result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
+        else:
+            self.__logger.saveHrmData(self.__recordSession, result[self.RESULT_HR], None, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
 
     def __lookingForHandle(self):
         self.__gatttool.sendline("char-desc")
@@ -110,33 +141,33 @@ class BLEHearRateService:
 
         byte0 = data[0]
         res = {}
-        res["hrv_uint8"] = (byte0 & 1) == 0
+        res[self.RESULT_HRV_UINT8] = (byte0 & 1) == 0
         sensor_contact = (byte0 >> 1) & 3
         if sensor_contact == 2:
-            res["sensor_contact"] = "No contact detected"
+            res[self.RESULT_SENSOR_CONTACT] = "No contact detected"
         elif sensor_contact == 3:
-            res["sensor_contact"] = "Contact detected"
+            res[self.RESULT_SENSOR_CONTACT] = "Contact detected"
         else:
-            res["sensor_contact"] = "Sensor contact not supported"
-        res["ee_status"] = ((byte0 >> 3) & 1) == 1
-        res["rr_interval"] = ((byte0 >> 4) & 1) == 1
+            res[self.RESULT_SENSOR_CONTACT] = "Sensor contact not supported"
+        res[self.RESULT_EE_STATUS] = ((byte0 >> 3) & 1) == 1
+        res[self.RESULT_RR_INTERVAL_AVAILABLE] = ((byte0 >> 4) & 1) == 1
 
-        if res["hrv_uint8"]:
-            res["hr"] = data[1]
+        if res[self.RESULT_HRV_UINT8]:
+            res[self.RESULT_HR] = data[1]
             i = 2
         else:
-            res["hr"] = (data[2] << 8) | data[1]
+            res[self.RESULT_HR] = (data[2] << 8) | data[1]
             i = 3
 
-        if res["ee_status"]:
-            res["ee"] = (data[i + 1] << 8) | data[i]
+        if res[self.RESULT_EE_STATUS]:
+            res[self.RESULT_EE] = (data[i + 1] << 8) | data[i]
             i += 2
 
-        if res["rr_interval"]:
-            res["rr"] = []
+        if res[self.RESULT_RR_INTERVAL_AVAILABLE]:
+            res[self.RESULT_RR_INTERVAL] = []
             while i < len(data):
                 # Note: Need to divide the value by 1024 to get in seconds
-                res["rr"].append((data[i + 1] << 8) | data[i])
+                res[self.RESULT_RR_INTERVAL].append((data[i + 1] << 8) | data[i])
                 i += 2
 
         return res
@@ -149,22 +180,20 @@ class RecordingLoggerInterface(abc.ABC):
         pass
 
     @abc.abstractclassmethod
-    def saveRecordSession(self, tstamp):
+    def startRecordSession(self, tstamp):
         pass
 
     @abc.abstractclassmethod
-    def saveHrmData(self, recordSession, hr, rr, tstamp):
+    def saveHrmData(self, recordSession, hr, rr, sensorContact, tstamp):
         pass
 
     @abc.abstractclassmethod
-    def close(self):
+    def stopRecordSession(self, tstamp):
         pass
 
 
 class RecordSession(abc.ABC):
-
-    def __init__(self):
-        pass
+    pass
 
 
 class HrmHandleNotFoundError(Exception):
