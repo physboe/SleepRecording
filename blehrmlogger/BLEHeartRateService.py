@@ -7,7 +7,6 @@ import sys
 class BLEHearRateService:
 
     HRM_UUID = "00002a37"
-    NOTIFICATION_EXPECT =
 
     def __init__(self, gatttoolpath, recordimpl, debug):
         if gatttoolpath != "gatttool" and not os.path.exists(gatttoolpath):
