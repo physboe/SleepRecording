@@ -12,7 +12,7 @@ def init():
     Entry point for the command line interface
     """
     try:
-        logging.basicConfig(format=LOGGING_FORMAT, level=logging.DEBUG)
+        logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO)
         confpath = os.path.join("configs", "SuuntoLocal.conf")
         args = cliu.loadConfigParameter(confpath)
         databaselayer = dbl.DatabaseLayer(args.o)
