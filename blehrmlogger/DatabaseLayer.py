@@ -15,7 +15,7 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         self.__closeDB(db)
 
     def __updateRecordSession(self, recordsession_id, tstamp):
-        cru = self.db.execute("UPDATE recordsession SET stop = ? where recordsession_id = ?", (tstamp,recordsession_id))
+        cru = self.db.execute("UPDATE recordsession SET end = ? where recordsession_id = ?", (tstamp,recordsession_id))
         self.db.commit()
         return cru.lastrowid
 
