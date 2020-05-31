@@ -8,10 +8,13 @@ LOGGING_FORMAT = "%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s
 
 def setLoggingStage(debug):
     print("setloggingstage")
+
     if debug:
-        logging.basicConfig(format=LOGGING_FORMAT, level=logging.DEBUG)
+        stage = logging.DEBUG
     else:
-        logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO)
+        stage = logging.INFO
+
+    logging.basicConfig(format=LOGGING_FORMAT, level=stage)
 
 
 def createParser():
