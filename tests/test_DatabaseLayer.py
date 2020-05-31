@@ -32,11 +32,11 @@ class TestDatabaseLayer(unittest.TestCase):
             try:
                 db = dbl.DatabaseLayer("test.db")
                 id = db.startRecordSession(self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
                 db.stopRecordSession(id, self.__getTimestamp())
 
                 db = sqlite3.connect("test.db")
@@ -49,12 +49,12 @@ class TestDatabaseLayer(unittest.TestCase):
             try:
                 db = dbl.DatabaseLayer("test.db")
                 id = db.startRecordSession(self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
                 db.stopRecordSession(id, self.__getTimestamp())
 
                 db = sqlite3.connect("test.db")
@@ -67,8 +67,8 @@ class TestDatabaseLayer(unittest.TestCase):
             try:
                 db = dbl.DatabaseLayer("test.db")
                 id = db.startRecordSession(self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
-                db.saveHrmData(id, 85, 722, self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
+                db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
                 db.stopRecordSession(id, self.__getTimestamp())
 
                 db = sqlite3.connect("test.db")

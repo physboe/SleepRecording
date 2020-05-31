@@ -47,7 +47,7 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         return DaoRecordSession(self.__insertRecordSession(tstamp))
 
     def saveHrmData(self, recordSession, hr, rr, sensorContact, tstamp):
-        self.___insertHrmData(recordSession.getId(), hr, rr, tstamp)
+        self.___insertHrmData(recordSession.getId(), hr, rr, sensorContact, tstamp)
 
     def stopRecordSession(self, recordSession, tstamp):
         self.__updateRecordSession(recordSession.getId(), tstamp)
