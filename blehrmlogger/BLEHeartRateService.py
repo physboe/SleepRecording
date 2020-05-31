@@ -19,7 +19,7 @@ class BLEHearRateService:
         self.__registered = False
 
     def connectToDevice(self, deviceMAC, connectionType):
-        if (self.__connected):
+        if self.__connected:
             logging.warning("Device already connected")
         else:
             while self.__run:
@@ -45,8 +45,9 @@ class BLEHearRateService:
                 break
 
     def listenToNotification(self, Listener):
-        if self.__connected and self.__registered
-            notification_expect = "Notification handle = " + hr_handle + " value: ([0-9a-f ]+)"
+        if self.__connected and self.__registered:
+
+            notification_expect = "Notification handle = " + self.__hr_handle + " value: ([0-9a-f ]+)"
 
             while self.__run:
                 try:
@@ -56,8 +57,8 @@ class BLEHearRateService:
                     logging.info("Handle Notification")
                 #    res = interpret(list(data))
                 except pexpect.TIMEOUT:
-                    log.warn("Connection lost with " + addr)
-                    raise ConnectionLostError("Connection lost with " + addr)
+                    logging.warn("Connection lost with ")
+                    raise ConnectionLostError("Connection lost with ")
 
         else:
             raise NoDeviceConnectedError("No Device connected or no Handle registered")
@@ -67,6 +68,7 @@ class BLEHearRateService:
             handle = self.__lookingForHandle()
             self.__gatttool.sendline("char-write-req " + handle + " 0100")
             self.__registered = True
+            self.__handle = handle
             logging.info("Registered to Handle " + handle)
         else:
             raise NoDeviceConnectedError()
