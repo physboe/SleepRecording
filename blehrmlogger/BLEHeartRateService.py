@@ -7,6 +7,7 @@ import sys
 class BLEHearRateService:
 
     HRM_UUID = "00002a37"
+    NOTIFICATION_EXPECT =
 
     def __init__(self, gatttoolpath, recordimpl, debug):
         if gatttoolpath != "gatttool" and not os.path.exists(gatttoolpath):
@@ -16,6 +17,7 @@ class BLEHearRateService:
         self.__run = True
         self.__gatttoolpath = gatttoolpath
         self.__connected = False
+        self.__registered = False
 
     def connectToDevice(self, deviceMAC, connectionType):
         if (self.__connected):
@@ -43,36 +45,61 @@ class BLEHearRateService:
                 logging.info("Connected to " + deviceMAC)
                 break
 
-    def registeringToHrHandle(self):
-        if self.__connected:
-            self.__gatttool.sendline("char-desc")
+    def listenToNotification(self, Listener):
+        if self.__connected and self.__registered
+            notification_expect = "Notification handle = " + hr_handle + " value: ([0-9a-f ]+)"
+
             while self.__run:
                 try:
-                    self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+                    self.__gatttool.expect(notification_expect, timeout=10)
+                    datahex = self.__gatttool.match.group(1).strip()
+                    data = map(lambda x: int(x, 16), datahex.split(b' '))
+                    logging.info("Handle Notification")
+                #    res = interpret(list(data))
                 except pexpect.TIMEOUT:
-                    break
-
-                handle = self.__gatttool.match.group(1).decode()
-                uuid = self.__gatttool.match.group(2).decode()
-
-                if uuid == self.HRM_UUID:
-                    hr_handle = handle
-                    break
-
-            if hr_handle is None:
-                logging.error("Couldn't find the heart rate measurement handle?!")
-                raise HrmHandleNotFoundError(self.HRM_UUID)
-            logging.info("Handle: " + hr_handle)
-            return hr_handle
+                    log.warn("Connection lost with " + addr)
+                    raise ConnectionLostError("Connection lost with " + addr)
 
         else:
-            raise NoDeviceConnected()
+            raise NoDeviceConnectedError("No Device connected or no Handle registered")
+
+    def registeringToHrHandle(self):
+        if self.__connected:
+            handle = self.__lookingForHandle()
+            self.__gatttool.sendline("char-write-req " + handle + " 0100")
+            self.__registered = True
+            logging.info("Registered to Handle " + handle)
+        else:
+            raise NoDeviceConnectedError()
+
+    def __lookingForHandle(self):
+        self.__gatttool.sendline("char-desc")
+        while self.__run:
+            try:
+                self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+            except pexpect.TIMEOUT:
+                break
+
+            handle = self.__gatttool.match.group(1).decode()
+            uuid = self.__gatttool.match.group(2).decode()
+
+            if uuid == self.HRM_UUID:
+                hr_handle = handle
+                break
+
+        if hr_handle is None:
+            logging.error("Couldn't find the heart rate measurement handle?!")
+            raise HrmHandleNotFoundError(self.HRM_UUID)
+        logging.info("Found Handle: " + hr_handle)
+        return hr_handle
 
     def close(self):
         self.__run = False
         if self.__connected:
-            self.__gatttool.sendline("exit")
+            self.__gatttool.sendline("quit")
+            self.__gatttool.wait()
             self.__connected = False
+            self.__registered = False
         logging.info("Connection closing")
 
 
@@ -80,5 +107,9 @@ class HrmHandleNotFoundError(Exception):
     pass
 
 
-class NoDeviceConnected(Exception):
+class NoDeviceConnectedError(Exception):
+    pass
+
+
+class ConnectionLostError(Exception):
     pass

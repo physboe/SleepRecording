@@ -22,6 +22,7 @@ def init():
         try:
             gatttoolutil.connectToDevice(args.m, args.t)
             gatttoolutil.registeringToHrHandle()
+            gatttoolutil.listenToNotification(None)
         except KeyboardInterrupt as key:
             logging.exception(key, exc_info=True)
             gatttoolutil.close()
