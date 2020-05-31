@@ -46,9 +46,9 @@ class BLEHearRateService:
 
     def listenToNotification(self, Listener):
         if self.__connected and self.__registered:
-            logging.info("Listen")
-            notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
 
+            notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
+            logging.info("Listen : " + notification_expect)
             while self.__run:
                 try:
                     self.__gatttool.expect(notification_expect, timeout=10)
