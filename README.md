@@ -8,10 +8,10 @@ This tool can be used from a terminal or as a module in your source code
 ### Terminal Usage
 ```sh
 python -m blehrmlogger [args]
-```sh
+```
 
 There is a help function
-```
+```sh
   python -m blehrmlogger --help
 ```
 ### Code Usage
