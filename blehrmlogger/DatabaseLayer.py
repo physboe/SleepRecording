@@ -26,6 +26,7 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         self.db.execute("INSERT INTO hrm (tstamp, hr, rr, fk_recordsession_id) VALUES (?, ?, ?, ?)", (tstamp, hr, rr, recordsession_id))
         self.counter = self.counter + 1
         if self.counter >= 5:
+            logging.info("Commit hrm_data")
             self.db.commit()
             self.counter = 0
 
