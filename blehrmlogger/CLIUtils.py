@@ -5,7 +5,7 @@ import configparser
 
 
 def initLogging():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(format="%(filename)s:%(funcName)s:%(levelname)s",level=logging.DEBUG)
 
 
 def setLoggingStage(debug):
