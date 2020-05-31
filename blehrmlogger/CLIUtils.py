@@ -4,6 +4,17 @@ import os
 import configparser
 
 
+def initLogging():
+    logging.basicConfig(level=logging.DEBUG)
+
+
+def setLoggingStage(debug):
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
+
 def createParser():
     parser = argparse.ArgumentParser(description="Bluetooth heart rate monitor data logger")
     parser.add_argument("-m", metavar='MAC', type=str, help="MAC address of BLE device (default: auto-discovery)")

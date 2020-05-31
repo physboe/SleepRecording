@@ -2,6 +2,7 @@ import os
 import logging
 import pexpect
 import sys
+import abc
 
 
 class BLEHearRateService:
@@ -44,7 +45,7 @@ class BLEHearRateService:
                 logging.info("Connected to " + deviceMAC)
                 break
 
-    def listenToNotification(self, Listener):
+    def listenToNotification(self, logger):
         if self.__connected and self.__registered:
 
             notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
@@ -73,6 +74,15 @@ class BLEHearRateService:
         else:
             raise NoDeviceConnectedError()
 
+    def close(self):
+        self.__run = False
+        if self.__connected:
+            self.__gatttool.sendline("quit")
+            self.__gatttool.wait()
+            self.__connected = False
+            self.__registered = False
+        logging.info("Connection closing")
+
     def __lookingForHandle(self):
         self.__gatttool.sendline("char-desc")
         while self.__run:
@@ -96,19 +106,7 @@ class BLEHearRateService:
         logging.info("Found Handle: " + hr_handle)
         return hr_handle, hr_handle_ctl
 
-    def close(self):
-        self.__run = False
-        if self.__connected:
-            self.__gatttool.sendline("quit")
-            self.__gatttool.wait()
-            self.__connected = False
-            self.__registered = False
-        logging.info("Connection closing")
-
     def __interpret(self, data):
-        """
-        data is a list of integers corresponding to readings from the BLE HR monitor
-        """
 
         byte0 = data[0]
         res = {}
@@ -142,6 +140,31 @@ class BLEHearRateService:
                 i += 2
 
         return res
+
+
+class RecordingLoggerInterface(abc.ABC):
+
+    @abc.abstractclassmethod
+    def __init__(self):
+        pass
+
+    @abc.abstractclassmethod
+    def saveRecordSession(self, tstamp):
+        pass
+
+    @abc.abstractclassmethod
+    def saveHrmData(self, recordSession, hr, rr, tstamp):
+        pass
+
+    @abc.abstractclassmethod
+    def close(self):
+        pass
+
+
+class RecordSession(abc.ABC):
+
+    def __init__(self):
+        pass
 
 
 class HrmHandleNotFoundError(Exception):

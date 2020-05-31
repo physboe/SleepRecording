@@ -1,6 +1,5 @@
 import logging
-from blehrmlogger import ConfigLoader as config
-from blehrmlogger import LoggingUtils as loggingutils
+from blehrmlogger import CLIUtils as cliu
 from blehrmlogger import BLEHeartRateService as ble
 from blehrmlogger import DatabaseLayer as dbl
 import os
@@ -11,12 +10,12 @@ def init():
     """
     Entry point for the command line interface
     """
-    loggingutils.initLogging()
+    cliu.initLogging()
     try:
         logging.info("command line interface")
         confpath = os.path.join("configs", "SuuntoLocal.conf")
-        args = config.loadConfigParameter(confpath)
-        loggingutils.setLoggingStage(args.v)
+        args = cliu.loadConfigParameter(confpath)
+        cliu.setLoggingStage(args.v)
         databaselayer = dbl.DatabaseLayer(args.o)
         gatttoolutil = ble.BLEHearRateService(args.g, databaselayer, args.d)
         try:

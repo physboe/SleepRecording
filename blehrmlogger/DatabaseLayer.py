@@ -1,15 +1,15 @@
 import sqlite3
 import time
-from blehrmlogger import RecordingLoggerInterface as ri
+from blehrmlogger import BLEHearRateService as bleservice
 import logging
 
 
-class DatabaseLayer(ri.RecordingLoggerInterface):
+class DatabaseLayer(bleservice.RecordingLoggerInterface):
 
     def __init__(self, databaseurl):
         self.db = sqlite3.connect(databaseurl)
         self.db.execute("CREATE TABLE IF NOT EXISTS recordsession (recordsession_id INTEGER PRIMARY KEY AUTOINCREMENT, tstamp INTEGER)")
-        self.db.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, fk_recordsession_id INTEGER, FOREIGN KEY(fk_recordsession_id) REFERENCES recordsession(recordsession_id))")
+        self.db.execute("CREATE TABLE IF NOT EXISTS hrm (tstamp INTEGER, hr INTEGER, rr INTEGER, sensor_context TEXT , fk_recordsession_id INTEGER, FOREIGN KEY(fk_recordsession_id) REFERENCES recordsession(recordsession_id))")
         self.db.execute("CREATE TABLE IF NOT EXISTS sql (tstamp INTEGER, commit_time REAL, commit_every INTEGER)")
         self.counter = 0
         logging.info("Database created")
@@ -38,7 +38,7 @@ class DatabaseLayer(ri.RecordingLoggerInterface):
         logging.info("Database closed")
 
 
-class DaoRecordSession(ri.RecordSession):
+class DaoRecordSession(bleservice.RecordSession):
 
     def __init__(self, id):
         self.__id = id
