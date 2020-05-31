@@ -12,7 +12,7 @@ def setLoggingStage(debug):
     if debug:
         stage = logging.DEBUG
     else:
-        stage = logging.INFO
+        stage = logging.DEBUG
 
     logging.basicConfig(format=LOGGING_FORMAT, level=stage)
 
