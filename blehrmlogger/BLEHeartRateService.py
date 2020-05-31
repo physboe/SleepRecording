@@ -28,7 +28,7 @@ class BLEHearRateService:
                 if self.__debug:
                     self.__gatttool.logfile = sys.stdout ### ins logging
 
-                self.__gatttool.expect(r"\[LE\]>")
+                self.__gatttool.expect("\[LE\]>")
                 self.__gatttool.sendline("connect")
 
                 try:
