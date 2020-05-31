@@ -67,6 +67,7 @@ class BLEHearRateService:
                     datahex = self.__gatttool.match.group(1).strip()
                     data = map(lambda x: int(x, 16), datahex.split(b' '))
                     result = self.__interpret(list(data))
+                    self.__sendToDataLogger(result)
                     logging.info("Handle Notification: " + str(result))
                 except pexpect.TIMEOUT:
                     logging.warn("Connection lost")
