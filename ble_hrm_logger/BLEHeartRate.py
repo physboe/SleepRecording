@@ -28,30 +28,29 @@ class BLEHearRateService:
         if self.__connected:
             log.warning("Device already connected")
         else:
-            while self.__run:
-                log.info("Establishing connection to " + deviceMAC)
-                gatttool_call = "gatttool -b " + deviceMAC + " -t " + connectionType +" --interactive"
-                log.debug(gatttool_call)
-                
-                self.__gatttool = pexpect.spawn(gatttool_call)
-                if self.__debug:
-                    self.__gatttool.logfile = sys.stdout.buffer ### ins logging
+            log.info("Establishing connection to " + deviceMAC)
+            gatttool_call = "gatttool -b " + deviceMAC + " -t " + connectionType +" --interactive"
+            log.debug(gatttool_call)
 
-                self.__gatttool.expect(r"\[LE\]>")
-                self.__gatttool.sendline("connect")
+            self.__gatttool = pexpect.spawn(gatttool_call)
+            if self.__debug:
+                self.__gatttool.logfile = sys.stdout.buffer ### ins logging
 
-                try:
-                    i = self.__gatttool.expect(["Connection successful.", r"\[CON\]"], timeout=30)
-                    if i == 0:
-                        self.__gatttool.expect(r"\[LE\]>", timeout=30)
+            self.__gatttool.expect(r"\[LE\]>")
+            self.__gatttool.sendline("connect")
 
-                except pexpect.TIMEOUT:
-                    log.info("Connection timeout. Retrying.")
-                    continue
+            try:
+                i = self.__gatttool.expect(["Connection successful.", r"\[CON\]"], timeout=30)
+                if i == 0:
+                    self.__gatttool.expect(r"\[LE\]>", timeout=30)
 
-                self.__connected = True
-                log.info("Connected to " + deviceMAC)
-                break
+            except pexpect.TIMEOUT as e:
+                log.info("Connection timeout. Retrying.")
+                raise ConnectionFailed(e)
+
+
+            self.__connected = True
+            log.info("Connected to " + deviceMAC)
 
     def startRecording(self, logger):
         if self.__connected and self.__registered:
@@ -213,4 +212,7 @@ class NoDeviceConnectedError(Exception):
 
 
 class ConnectionLostError(Exception):
+    pass
+
+class ConnectionFailed(Exception):
     pass
