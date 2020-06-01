@@ -17,10 +17,10 @@ def init():
         log.info("start application")
         confpath = os.path.join("configs", "SuuntoLocal.conf")
         args = cliu.loadConfigParameter(confpath)
-        databaselayer = dbl.DatabaseService(args.o)
-        gatttoolutil = ble.BLEHearRateService(args.g, args.d)
+        databaselayer = dbl.DatabaseService(args.output)
+        gatttoolutil = ble.BLEHearRateService(args.d)
         try:
-            gatttoolutil.connectToDevice(args.m, args.t)
+            gatttoolutil.connectToDevice(args.mac, args.type)
             gatttoolutil.registeringToHrHandle()
             gatttoolutil.startRecording(databaselayer)
         except KeyboardInterrupt as key:
