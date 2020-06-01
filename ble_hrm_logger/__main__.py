@@ -5,14 +5,16 @@ from ble_hrm_logger import DatabaseLayer as dbl
 import os
 import sys
 
-LOGGING_FORMAT = "%(asctime)s:%(module)s:%(funcName)s:%(levelname)s: %(message)s"
+logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../configs/logging.conf'))
+logging.config.fileConfig(logging_conf_path)
+log = logging.getLogger(__name__)
 
 def init():
     """
     Entry point for the command line interface
     """
     try:
-        logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO)
+        log.info("start application")
         confpath = os.path.join("configs", "SuuntoLocal.conf")
         args = cliu.loadConfigParameter(confpath)
         databaselayer = dbl.DatabaseService(args.o)
@@ -22,10 +24,10 @@ def init():
             gatttoolutil.registeringToHrHandle()
             gatttoolutil.startRecording(databaselayer)
         except KeyboardInterrupt as key:
-            logging.exception(key, exc_info=True)
+            log.exception(key, exc_info=True)
 
         except Exception as e:
-            logging.exception(e, exc_info=True)
+            log.exception(e, exc_info=True)
         finally:
             gatttoolutil.close()
 
