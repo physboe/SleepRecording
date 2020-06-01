@@ -30,7 +30,9 @@ class BLEHearRateService:
         else:
             while self.__run:
                 log.info("Establishing connection to " + deviceMAC)
-                self.__gatttool = pexpect.spawn("gatttool -b " + deviceMAC + " -t " + connectionType +" --interactive")
+                gatttool_call = "gatttool -b " + deviceMAC + " -t " + connectionType +" --interactive"
+                log.debug(gatttool_call)
+                self.__gatttool = pexpect.spawn(gatttool_call)
                 if self.__debug:
                     self.__gatttool.logfile = sys.stdout.buffer ### ins logging
 
@@ -70,7 +72,6 @@ class BLEHearRateService:
                     log.warn("Connection lost")
 
                     raise ConnectionLostError("Connection lost")
-
         else:
             raise NoDeviceConnectedError("No Device connected or no Handle registered")
 
