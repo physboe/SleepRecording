@@ -19,13 +19,8 @@ class BLEHearRateService:
     RESULT_EE = "ee"
     RESULT_HRV_UINT8 = "hrv_uint8"
 
-    def __init__(self, gatttoolpath, debug):
-        if gatttoolpath != "gatttool" and not os.path.exists(gatttoolpath):
-            log.critical("Couldn't find gatttool path!")
-            raise RuntimeError("No Gatttool found")
+    def __init__(self, debug):
         self.__debug = debug
-        self.__gatttoolpath = gatttoolpath
-
         self.__setInitStat()
         self.__run = True
 
@@ -35,7 +30,7 @@ class BLEHearRateService:
         else:
             while self.__run:
                 log.info("Establishing connection to " + deviceMAC)
-                self.__gatttool = pexpect.spawn(self.__gatttoolpath + " -b " + deviceMAC + " -t " + connectionType +" --interactive")
+                self.__gatttool = pexpect.spawn("gatttool -b " + deviceMAC + " -t " + connectionType +" --interactive")
                 if self.__debug:
                     self.__gatttool.logfile = sys.stdout.buffer ### ins logging
 
