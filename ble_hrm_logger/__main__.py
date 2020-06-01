@@ -1,4 +1,4 @@
-import logging
+import logging.config
 from ble_hrm_logger import CLIUtils as cliu
 from ble_hrm_logger import BLEHeartRate as ble
 from ble_hrm_logger import DatabaseLayer as dbl
