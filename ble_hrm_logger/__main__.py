@@ -1,7 +1,7 @@
 import logging
-from blehrmlogger import CLIUtils as cliu
-from blehrmlogger import BLEHeartRateService as ble
-from blehrmlogger import DatabaseLayer as dbl
+from ble_hrm_logger import CLIUtils as cliu
+from ble_hrm_logger import BLEHeartRateService as ble
+from ble_hrm_logger import DatabaseLayer as dbl
 import os
 import sys
 

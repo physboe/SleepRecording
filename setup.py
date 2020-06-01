@@ -1,10 +1,10 @@
-import setuptools
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setuptools.setup(
-    name="blerrlogger-physboe",
+setup(
+    name="ble_rr_logger",
     version="1.0.0",
     author="Andre Boeni",
     author_email="boeni10@gmail.com",
@@ -14,11 +14,12 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/physboe/BLEHeartRateRRLogger.git",
-    packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3.7.3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: Linux, Raspberry Pi",
     ],
     python_requires='>=3.7.3',
+    packages=find_packages(),
+    install_requires=['pexpect==4.8.0'],
 )

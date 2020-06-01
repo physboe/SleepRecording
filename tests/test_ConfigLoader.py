@@ -1,5 +1,5 @@
 import unittest
-from blehrmlogger import CLIUtils as configloader
+from ble_hrm_logger import CLIUtils as configloader
 import os
 
 

@@ -1,0 +1,40 @@
+Metadata-Version: 2.1
+Name: ble-rr-logger
+Version: 1.0.0
+Summary: A little tool to read RR intervalls from BLE Device and save it to a sqlite3 database. You need gatttool to make it work.
+Home-page: https://github.com/physboe/BLEHeartRateRRLogger.git
+Author: Andre Boeni
+Author-email: boeni10@gmail.com
+License: UNKNOWN
+Description: # Ble-rr-reader
+        
+        This is a simple tool to read R-R Interval from BLE Device and store it in a SQLite Database. To make it work you will need to install gatttool on your machine. It's only tested with an SUUNTO-Smart heart belt sensor on a RaspberryPi 3+.
+        
+        ## Usage
+        This tool can be used from a terminal or as a module in your source code
+        
+        ### Terminal Usage
+        ```sh
+        python -m blehrmlogger [args]
+        ```
+        
+        There is a help function
+        ```sh
+        python -m blehrmlogger --help
+        ```
+        ### Code Usage
+        ```python
+        databaselayer = dbl.DatabaseLayer("database.data")
+        gatttoolutil = ble.BLEHearRateService("gatttool", false)
+        gatttoolutil.connectToDevice("[you device mac]", "public")
+        gatttoolutil.registeringToHrHandle()
+        gatttoolutil.startRecording(databaselayer)
+        gatttoolutil.close()
+        ```
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.7.3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Linux, Raspberry Pi
+Requires-Python: >=3.7.3
+Description-Content-Type: text/markdown
