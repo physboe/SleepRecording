@@ -9,7 +9,7 @@ def createParser():
     parser.add_argument("-mac", metavar='MAC', type=str, help="MAC address of BLE device (default: auto-discovery)")
     parser.add_argument("-output", metavar='FILE', type=str, help="Output filename of the database (default: none)")
     parser.add_argument("-v", action='store_true', help="Verbose output", default=False)
-    parser.add_argument("-d", action='store_true', help="Enable debug of gatttool")
+    parser.add_argument("-debug", action='store_true', help="Enable debug of gatttool")
     parser.add_argument("-type", metavar='TYPE', type=str, help="Connection type random or public")
     return parser
 

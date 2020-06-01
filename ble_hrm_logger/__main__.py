@@ -18,7 +18,7 @@ def init():
         confpath = os.path.join("configs", "SuuntoLocal.conf")
         args = cliu.loadConfigParameter(confpath)
         databaselayer = dbl.DatabaseService(args.output)
-        gatttoolutil = ble.BLEHearRateService(args.d)
+        gatttoolutil = ble.BLEHearRateService(args.debug)
         try:
             gatttoolutil.connectToDevice(args.mac, args.type)
             gatttoolutil.registeringToHrHandle()
