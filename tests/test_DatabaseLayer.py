@@ -9,13 +9,13 @@ class TestDatabaseLayer(unittest.TestCase):
 
     def test_init(self):
         try:
-            dbl.DatabaseLayer("test.db")
+            dbl.DatabaseService("test.db")
         except Exception as e:
             self.fail(e.message)
 
     def test_insert_recordsession(self):
             try:
-                db = dbl.DatabaseLayer("test.db")
+                db = dbl.DatabaseService("test.db")
                 recordSession = db.startRecordSession(self.__getTimestamp())
                 db.stopRecordSession(recordSession, self.__getTimestamp())
                 db = sqlite3.connect("test.db")
@@ -30,7 +30,7 @@ class TestDatabaseLayer(unittest.TestCase):
 
     def test_insert_five_recordsession(self):
             try:
-                db = dbl.DatabaseLayer("test.db")
+                db = dbl.DatabaseService("test.db")
                 id = db.startRecordSession(self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
@@ -47,7 +47,7 @@ class TestDatabaseLayer(unittest.TestCase):
 
     def test_insert_six_recordsession(self):
             try:
-                db = dbl.DatabaseLayer("test.db")
+                db = dbl.DatabaseService("test.db")
                 id = db.startRecordSession(self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
@@ -65,7 +65,7 @@ class TestDatabaseLayer(unittest.TestCase):
 
     def test_insert_two_recordsession(self):
             try:
-                db = dbl.DatabaseLayer("test.db")
+                db = dbl.DatabaseService("test.db")
                 id = db.startRecordSession(self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())
                 db.saveHrmData(id, 85, 722, 'lose', self.__getTimestamp())

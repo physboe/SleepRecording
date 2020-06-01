@@ -1,9 +1,11 @@
 import sqlite3
-from blehrmlogger import BLEHeartRateService as bleservice
+from ble_hrm_logger import BLEHeartRate as bleservice
 import logging
 
+log = logging.getLogger(__name__)
 
-class DatabaseLayer(bleservice.RecordingLoggerInterface):
+
+class DatabaseService(bleservice.RecordingLoggerInterface):
 
     COMMIT_COUNT = 15
     SQL_CREATE_RECORDSESSION = "CREATE TABLE IF NOT EXISTS recordsession (recordsession_id INTEGER PRIMARY KEY AUTOINCREMENT, start INTEGER, end INTEGER)"
@@ -33,19 +35,19 @@ class DatabaseLayer(bleservice.RecordingLoggerInterface):
         self.__db.execute(self.SQL_INSERT_HRM_DATA, (tstamp, hr, rr, sensor_contact, recordsession_id))
         self.__counter = self.__counter + 1
         if self.__counter >= self.COMMIT_COUNT:
-            logging.debug("Commit hrm_data")
+            log.debug("Commit hrm_data")
             self.__db.commit()
             self.__counter = 0
 
     def __connectToDb(self):
         db = sqlite3.connect(self.__databaseurl)
-        logging.info("Connected to database")
+        log.info("Connected to database")
         return db
 
     def __closeDB(self, db):
         db.commit()
         db.close()
-        logging.info("Database closed")
+        log.info("Database closed")
 
     def startRecordSession(self, tstamp):
         self.__db = self.__connectToDb()

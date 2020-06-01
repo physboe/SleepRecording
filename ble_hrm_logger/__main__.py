@@ -1,6 +1,6 @@
 import logging
 from ble_hrm_logger import CLIUtils as cliu
-from ble_hrm_logger import BLEHeartRateService as ble
+from ble_hrm_logger import BLEHeartRate as ble
 from ble_hrm_logger import DatabaseLayer as dbl
 import os
 import sys
@@ -15,7 +15,7 @@ def init():
         logging.basicConfig(format=LOGGING_FORMAT, level=logging.INFO)
         confpath = os.path.join("configs", "SuuntoLocal.conf")
         args = cliu.loadConfigParameter(confpath)
-        databaselayer = dbl.DatabaseLayer(args.o)
+        databaselayer = dbl.DatabaseService(args.o)
         gatttoolutil = ble.BLEHearRateService(args.g, args.d)
         try:
             gatttoolutil.connectToDevice(args.m, args.t)

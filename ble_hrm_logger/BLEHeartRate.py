@@ -5,6 +5,8 @@ import sys
 import abc
 import time
 
+log = logging.getLogger(__name__)
+
 
 class BLEHearRateService:
 
@@ -19,7 +21,7 @@ class BLEHearRateService:
 
     def __init__(self, gatttoolpath, debug):
         if gatttoolpath != "gatttool" and not os.path.exists(gatttoolpath):
-            logging.critical("Couldn't find gatttool path!")
+            log.critical("Couldn't find gatttool path!")
             raise RuntimeError("No Gatttool found")
         self.__debug = debug
         self.__gatttoolpath = gatttoolpath
@@ -29,10 +31,10 @@ class BLEHearRateService:
 
     def connectToDevice(self, deviceMAC, connectionType):
         if self.__connected:
-            logging.warning("Device already connected")
+            log.warning("Device already connected")
         else:
             while self.__run:
-                logging.info("Establishing connection to " + deviceMAC)
+                log.info("Establishing connection to " + deviceMAC)
                 self.__gatttool = pexpect.spawn(self.__gatttoolpath + " -b " + deviceMAC + " -t " + connectionType +" --interactive")
                 if self.__debug:
                     self.__gatttool.logfile = sys.stdout.buffer ### ins logging
@@ -46,11 +48,11 @@ class BLEHearRateService:
                         self.__gatttool.expect(r"\[LE\]>", timeout=30)
 
                 except pexpect.TIMEOUT:
-                    logging.info("Connection timeout. Retrying.")
+                    log.info("Connection timeout. Retrying.")
                     continue
 
                 self.__connected = True
-                logging.info("Connected to " + deviceMAC)
+                log.info("Connected to " + deviceMAC)
                 break
 
     def startRecording(self, logger):
@@ -60,7 +62,7 @@ class BLEHearRateService:
             self.__recording = True
 
             notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
-            logging.debug("Listen : " + notification_expect)
+            log.debug("Listen : " + notification_expect)
             while self.__run:
                 try:
                     self.__gatttool.expect(notification_expect, timeout=10)
@@ -68,9 +70,9 @@ class BLEHearRateService:
                     data = map(lambda x: int(x, 16), datahex.split(b' '))
                     result = self.__interpret(list(data))
                     self.__sendToDataLogger(result)
-                    logging.debug("Handle Notification: " + str(result))
+                    log.debug("Handle Notification: " + str(result))
                 except pexpect.TIMEOUT:
-                    logging.warn("Connection lost")
+                    log.warn("Connection lost")
 
                     raise ConnectionLostError("Connection lost")
 
@@ -83,7 +85,7 @@ class BLEHearRateService:
             self.__gatttool.sendline("char-write-req " + hr_handle_ctl + " 0100")
             self.__registered = True
             self.__handle = hr_handle
-            logging.info("Registered to Handle " + hr_handle)
+            log.info("Registered to Handle " + hr_handle)
         else:
             raise NoDeviceConnectedError()
 
@@ -102,7 +104,7 @@ class BLEHearRateService:
             self.__gatttool.wait()
 
         self.__setInitStat()
-        logging.info("Connection closing")
+        log.info("Connection closing")
 
     def __setInitStat(self):
         self.__run = False
@@ -112,7 +114,6 @@ class BLEHearRateService:
         self.__recordSession = None
         self.__logger = None
         self.__handle = None
-
 
     def __getTimeStamp(self):
         return int(time.time())
@@ -142,9 +143,9 @@ class BLEHearRateService:
                 break
 
         if hr_handle is None:
-            logging.error("Couldn't find the heart rate measurement handle?!")
+            log.error("Couldn't find the heart rate measurement handle?!")
             raise HrmHandleNotFoundError(self.HRM_UUID)
-        logging.debug("Found Handle: " + hr_handle)
+        log.debug("Found Handle: " + hr_handle)
         return hr_handle, hr_handle_ctl
 
     def __interpret(self, data):
