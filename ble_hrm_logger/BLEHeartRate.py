@@ -4,10 +4,11 @@ import pexpect
 import sys
 import abc
 import time
+from singleton_decorator import singleton
 
 log = logging.getLogger(__name__)
 
-
+@singleton
 class BLEHearRateService:
 
     HRM_UUID = "00002a37"
@@ -22,7 +23,7 @@ class BLEHearRateService:
     def __init__(self, debug):
         self.__debug = debug
         self.__setInitStat()
-        self.__run = True
+
 
     def connectToDevice(self, deviceMAC, connectionType):
         if self.__connected:
@@ -59,8 +60,7 @@ class BLEHearRateService:
             self.__recording = True
 
             notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
-            log.debug("Listen : " + notification_expect)
-            while self.__run:
+            while self.__recording:
                 try:
                     self.__gatttool.expect(notification_expect, timeout=10)
                     datahex = self.__gatttool.match.group(1).strip()
@@ -70,8 +70,8 @@ class BLEHearRateService:
                     log.debug("Handle Notification: " + str(result))
                 except pexpect.TIMEOUT:
                     log.warn("Connection lost")
-
                     raise ConnectionLostError("Connection lost")
+
         else:
             raise NoDeviceConnectedError("No Device connected or no Handle registered")
 
@@ -90,11 +90,14 @@ class BLEHearRateService:
             self.__logger.stopRecordSession(self.__recordSession, self.__getTimeStamp())
             self.__recording = False
 
+    def isRecording(self):
+        return self.__recording
+
     def close(self):
         if self.__recording:
-            self.stopRecording()
-
-        self.__run = False
+            pass
+            #todo throw exeption
+            #self.stopRecording()
         if self.__connected:
             self.__gatttool.sendline("quit")
             self.__gatttool.wait()
@@ -103,10 +106,10 @@ class BLEHearRateService:
         log.info("Connection closing")
 
     def __setInitStat(self):
-        self.__run = False
         self.__connected = False
         self.__registered = False
         self.__recording = False
+
         self.__recordSession = None
         self.__logger = None
         self.__handle = None
@@ -123,7 +126,7 @@ class BLEHearRateService:
 
     def __lookingForHandle(self):
         self.__gatttool.sendline("char-desc")
-        while self.__run:
+        while 1:
             try:
                 self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
             except pexpect.TIMEOUT:
