@@ -20,6 +20,7 @@ class BleHrmRerding(Resource):
         """
         Creates a new blog category.
         """
+        log.debug(request.data)
         if request.data.get("running"):
             HrmService().stopRecording()
         else:
