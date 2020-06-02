@@ -19,7 +19,7 @@ class DatabaseService(bleservice.RecordingLoggerInterface):
         db = self.__connectToDb()
         db.execute(self.SQL_CREATE_RECORDSESSION)
         db.execute(self.SQL_CREATE_HRM_DATA)
-        self.__closeDB(db)
+        self.__db = db
 
     def __updateRecordSession(self, recordsession_id, tstamp):
         cru = self.__db.execute(self.SQL_UPDATE_RECORDSESSION, (tstamp,recordsession_id))
