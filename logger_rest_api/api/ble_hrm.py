@@ -21,7 +21,7 @@ class BleHrmRerding(Resource):
         Creates a new blog category.
         """
         if request.json.get('running'):
-            HrmService().stopRecording()
-        else:
             HrmService().startRecording()
+        else:
+            HrmService().stopRecording()
         return None, 201
