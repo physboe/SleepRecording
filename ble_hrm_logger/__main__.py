@@ -4,10 +4,12 @@ from ble_hrm_logger import BLEHeartRate as ble
 from ble_hrm_logger import DatabaseLayer as dbl
 import os
 import sys
+from threading import Thread
 
 logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../configs/logging.conf'))
 logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
+
 
 def init():
     """
@@ -18,18 +20,20 @@ def init():
         confpath = os.path.join("configs", "SuuntoLocal.conf")
         args = cliu.loadConfigParameter(confpath)
         databaselayer = dbl.DatabaseService(args.output)
-        gatttoolutil = ble.BLEHearRateService(args.debug)
+        log.info("init BLEHearRateService")
+        gatttoolutil = ble.BLEHearRateService(databaselayer, args.debug)
         try:
-            gatttoolutil.connectToDevice(args.mac, args.type)
-            gatttoolutil.registeringToHrHandle()
-            gatttoolutil.startRecording(databaselayer)
+            proc = Thread(target=gatttoolutil.startRecording, args=(args.mac, args.type))
+            log.info("start process")
+            proc.start()
+            proc.join()
+
         except KeyboardInterrupt as key:
             log.exception(key, exc_info=True)
+            gatttoolutil.stopRecording()
 
         except Exception as e:
             log.exception(e, exc_info=True)
-        finally:
-            gatttoolutil.close()
 
     except Exception as e:
         logging.exception(e, exc_info=True)

@@ -1,17 +1,49 @@
-import os
+
 import logging
 import pexpect
 import sys
 import abc
 import time
-from singleton_decorator import singleton
 
 log = logging.getLogger(__name__)
 
-@singleton
-class BLEHearRateService:
 
+class RecordingListener(abc.ABC):
+
+    @abc.abstractclassmethod
+    def __init__(self):
+        pass
+
+    @abc.abstractclassmethod
+    def listen(self, hr: int, rr: int, sensorContact: str, tstamp: float):
+        pass
+
+
+class RecordSession(abc.ABC):
+    pass
+
+
+class HrmHandleNotFoundError(Exception):
+    pass
+
+
+class NoDeviceConnectedError(Exception):
+    pass
+
+
+class ConnectionLostError(Exception):
+    pass
+
+
+class ConnectionFailed(Exception):
+    pass
+
+
+class BLEHearRateService:
+    # UUID for BLE HearRate Notifier
     HRM_UUID = "00002a37"
+
+    # Names for Result Array
     RESULT_RR_INTERVAL_AVAILABLE = "rr_avb"
     RESULT_RR_INTERVAL = "rr"
     RESULT_HR = "hr"
@@ -20,99 +52,122 @@ class BLEHearRateService:
     RESULT_EE = "ee"
     RESULT_HRV_UINT8 = "hrv_uint8"
 
-    def __init__(self, debug):
+    def __init__(self, listener: RecordingListener, debug: bool):
+        """
+        Parameters
+        ----------
+        logger : RecordingLoggerInterface
+            An implemented object of RecordingLoggerInterface which revices data
+        debug : bool
+            If you want to debug gatttool output
+        """
+        self.__listener = listener
         self.__debug = debug
-        self.__setInitStat()
 
+    def startRecording(self, deviceMac: str, connectionType: str):
+        """
+        This public methode starts gatttool and trys to connect to device.
+        In success it further looks for the right hearrate handler and register
+        itself.
+        It starts to listen and send decodec results to logger
 
-    def connectToDevice(self, deviceMAC, connectionType):
-        if self.__connected:
-            log.warning("Device already connected")
-        else:
-            log.info("Establishing connection to " + deviceMAC)
-            gatttool_call = "gatttool -b " + deviceMAC + " -t " + connectionType +" --interactive"
-            log.debug(gatttool_call)
+        Parameters
+        ----------
+        deviceMac : str
+            Mac of your Heart Rate BLE device
+        connectionType : str
+            either random or public depends on your device
+        """
 
-            self.__gatttool = pexpect.spawn(gatttool_call)
-            if self.__debug:
-                self.__gatttool.logfile = sys.stdout.buffer ### ins logging
+        log.info("Start gatttool")
+        gatttool = self.__startGatttool(deviceMac, connectionType)
 
-            self.__gatttool.expect(r"\[LE\]>")
-            self.__gatttool.sendline("connect")
+        log.info(f"Establishing connection to {deviceMac}")
+        self.__connect(gatttool)
+        log.info(f"Connected to {deviceMac}")
 
-            try:
-                i = self.__gatttool.expect(["Connection successful.", r"\[CON\]"], timeout=30)
-                if i == 0:
-                    self.__gatttool.expect(r"\[LE\]>", timeout=30)
+        hr_handle, hr_handle_ctl = self.__registeringToHrHandle(gatttool)
+        log.info(f"Registered to Handle {hr_handle} on {hr_handle_ctl}")
 
-            except pexpect.TIMEOUT as e:
-                log.info("Connection timeout. Retrying.")
-                raise ConnectionFailed(e)
+        log.info(f"Start reading {hr_handle}")
+        self.__readOutput(gatttool, hr_handle)
+        log.info(f"Start reading {hr_handle}")
 
-
-            self.__connected = True
-            log.info("Connected to " + deviceMAC)
-
-    def startRecording(self, logger):
-        if self.__connected and self.__registered:
-            self.__logger = logger
-            self.__recordSession = logger.startRecordSession(self.__getTimeStamp())
-            self.__recording = True
-
-            notification_expect = "Notification handle = " + self.__handle + " value: ([0-9a-f ]+)"
-            while self.__recording:
-                try:
-                    self.__gatttool.expect(notification_expect, timeout=10)
-                    datahex = self.__gatttool.match.group(1).strip()
-                    data = map(lambda x: int(x, 16), datahex.split(b' '))
-                    result = self.__interpret(list(data))
-                    self.__sendToDataLogger(result)
-                    log.debug("Handle Notification: " + str(result))
-                except pexpect.TIMEOUT:
-                    log.warn("Connection lost")
-                    raise ConnectionLostError("Connection lost")
-
-        else:
-            raise NoDeviceConnectedError("No Device connected or no Handle registered")
-
-    def registeringToHrHandle(self):
-        if self.__connected:
-            hr_handle, hr_handle_ctl = self.__lookingForHandle()
-            self.__gatttool.sendline("char-write-req " + hr_handle_ctl + " 0100")
-            self.__registered = True
-            self.__handle = hr_handle
-            log.info("Registered to Handle " + hr_handle)
-        else:
-            raise NoDeviceConnectedError()
+        self.__disconnect(gatttool)
+        log.info(f"Disconnected to {deviceMac}")
 
     def stopRecording(self):
         if self.__recording:
-            self.__logger.stopRecordSession(self.__recordSession, self.__getTimeStamp())
             self.__recording = False
 
     def isRecording(self):
         return self.__recording
 
-    def close(self):
-        if self.__recording:
-            pass
-            #todo throw exeption
-            #self.stopRecording()
-        if self.__connected:
-            self.__gatttool.sendline("quit")
-            self.__gatttool.wait()
+    def __startGatttool(self, deviceMac: str, connectionType: str):
+        gatttool = pexpect.spawn(f"gatttool -b {deviceMac} -t {connectionType} --interactive")
+        # enable debug mode in sys out
+        if self.__debug:
+            gatttool.logfile = sys.stdout.buffer
+        return gatttool
 
-        self.__setInitStat()
-        log.info("Connection closing")
+    def __disconnect(self, gatttool):
+        gatttool.sendline("quit")
+        gatttool.wait()
 
-    def __setInitStat(self):
-        self.__connected = False
-        self.__registered = False
-        self.__recording = False
+    def __connect(self, gatttool):
+        gatttool.expect(r"\[LE\]>")
+        gatttool.sendline("connect")
+        try:
+            i = gatttool.expect(["Connection successful.", r"\[CON\]"], timeout=30)
+            if i == 0:
+                gatttool.expect(r"\[LE\]>", timeout=30)
 
-        self.__recordSession = None
-        self.__logger = None
-        self.__handle = None
+        except pexpect.TIMEOUT as e:
+            log.info("Connection timeout.")
+            raise ConnectionFailed(e)
+
+    def __registeringToHrHandle(self, gatttool) -> [str, str]:
+        hr_handle, hr_handle_ctl = self.__lookingForHandle()
+        gatttool.sendline(f"char-write-req {hr_handle_ctl} 0100")
+        return hr_handle, hr_handle_ctl
+
+    def __lookingForHandle(self, gatttool)-> [str, str]:
+        gatttool.sendline("char-desc")
+        while 1:
+            try:
+                gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+            except pexpect.TIMEOUT:
+                break
+
+            handle = gatttool.match.group(1).decode()
+            uuid = gatttool.match.group(2).decode()
+
+            if uuid == self.HRM_UUID:
+                hr_handle = handle
+                gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
+                hr_handle_ctl = gatttool.match.group(1).decode()
+                break
+
+        if hr_handle is None:
+            log.error("Couldn't find the heart rate measurement handle?!")
+            raise HrmHandleNotFoundError(self.HRM_UUID)
+        log.debug(f"Found Handle: {hr_handle}")
+        return hr_handle, hr_handle_ctl
+
+    def __readOutput(self, gatttool, hr_handle: str):
+        self.__recording = True
+        notification_expect = f"Notification handle = {hr_handle} value: ([0-9a-f ]+)"
+        while self.__recording:
+            try:
+                gatttool.expect(notification_expect, timeout=10)
+                datahex = gatttool.match.group(1).strip()
+                data = map(lambda x: int(x, 16), datahex.split(b' '))
+                result = self.__interpret(list(data))
+            #    self.__sendToDataLogger(result)
+                log.debug("Handle Notification: " + str(result))
+            except pexpect.TIMEOUT:
+                log.warn("Connection lost")
+                raise ConnectionLostError("Connection lost")
 
     def __getTimeStamp(self):
         return int(time.time())
@@ -120,32 +175,9 @@ class BLEHearRateService:
     def __sendToDataLogger(self, result):
         if result[self.RESULT_RR_INTERVAL_AVAILABLE]:
             for rrInterval in result[self.RESULT_RR_INTERVAL]:
-                self.__logger.saveHrmData(self.__recordSession, result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
+                self.__listener.listen(result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
         else:
-            self.__logger.saveHrmData(self.__recordSession, result[self.RESULT_HR], None, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
-
-    def __lookingForHandle(self):
-        self.__gatttool.sendline("char-desc")
-        while 1:
-            try:
-                self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
-            except pexpect.TIMEOUT:
-                break
-
-            handle = self.__gatttool.match.group(1).decode()
-            uuid = self.__gatttool.match.group(2).decode()
-
-            if uuid == self.HRM_UUID:
-                hr_handle = handle
-                self.__gatttool.expect(r"handle: (0x[0-9a-f]+), uuid: ([0-9a-f]{8})", timeout=10)
-                hr_handle_ctl = self.__gatttool.match.group(1).decode()
-                break
-
-        if hr_handle is None:
-            log.error("Couldn't find the heart rate measurement handle?!")
-            raise HrmHandleNotFoundError(self.HRM_UUID)
-        log.debug("Found Handle: " + hr_handle)
-        return hr_handle, hr_handle_ctl
+            self.__listener.listen(result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
 
     def __interpret(self, data):
 
@@ -181,41 +213,3 @@ class BLEHearRateService:
                 i += 2
 
         return res
-
-
-class RecordingLoggerInterface(abc.ABC):
-
-    @abc.abstractclassmethod
-    def __init__(self):
-        pass
-
-    @abc.abstractclassmethod
-    def startRecordSession(self, tstamp):
-        pass
-
-    @abc.abstractclassmethod
-    def saveHrmData(self, recordSession, hr, rr, sensorContact, tstamp):
-        pass
-
-    @abc.abstractclassmethod
-    def stopRecordSession(self, tstamp):
-        pass
-
-
-class RecordSession(abc.ABC):
-    pass
-
-
-class HrmHandleNotFoundError(Exception):
-    pass
-
-
-class NoDeviceConnectedError(Exception):
-    pass
-
-
-class ConnectionLostError(Exception):
-    pass
-
-class ConnectionFailed(Exception):
-    pass

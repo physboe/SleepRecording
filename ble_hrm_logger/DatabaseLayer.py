@@ -5,7 +5,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class DatabaseService(bleservice.RecordingLoggerInterface):
+class DatabaseService(bleservice.RecordingListener):
 
     COMMIT_COUNT = 15
     SQL_CREATE_RECORDSESSION = "CREATE TABLE IF NOT EXISTS recordsession (recordsession_id INTEGER PRIMARY KEY AUTOINCREMENT, start INTEGER, end INTEGER)"
@@ -14,11 +14,12 @@ class DatabaseService(bleservice.RecordingLoggerInterface):
     SQL_UPDATE_RECORDSESSION = "UPDATE recordsession SET end = ? where recordsession_id = ?"
     SQL_INSERT_HRM_DATA = "INSERT INTO hrm (tstamp, hr, rr, sensor_contact, fk_recordsession_id) VALUES (?, ?, ?, ?, ?)"
 
-    def __init__(self, databaseurl):
+    def __init__(self, databaseurl: str):
         self.__databaseurl = databaseurl
         db = self.__connectToDb()
         db.execute(self.SQL_CREATE_RECORDSESSION)
         db.execute(self.SQL_CREATE_HRM_DATA)
+        self.__recordSession = None
         self.__db = db
 
     def __updateRecordSession(self, recordsession_id, tstamp):
@@ -31,7 +32,7 @@ class DatabaseService(bleservice.RecordingLoggerInterface):
         self.__db.commit()
         return cru.lastrowid
 
-    def ___insertHrmData(self, recordsession_id, hr, rr, sensor_contact, tstamp):
+    def ___insertHrmData(self, recordsession_id: int, hr: int, rr, sensor_contact, tstamp):
         self.__db.execute(self.SQL_INSERT_HRM_DATA, (tstamp, hr, rr, sensor_contact, recordsession_id))
         self.__counter = self.__counter + 1
         if self.__counter >= self.COMMIT_COUNT:
@@ -49,16 +50,16 @@ class DatabaseService(bleservice.RecordingLoggerInterface):
         db.close()
         log.info("Database closed")
 
-    def startRecordSession(self, tstamp):
+    def startRecordSession(self, tstamp: float):
         self.__db = self.__connectToDb()
         self.__counter = 0
-        return DaoRecordSession(self.__insertRecordSession(tstamp))
+        self.__recordSession = DaoRecordSession(self.__insertRecordSession(tstamp))
 
-    def saveHrmData(self, recordSession, hr, rr, sensorContact, tstamp):
-        self.___insertHrmData(recordSession.getId(), hr, rr, sensorContact, tstamp)
+    def listen(self, hr: int, rr: int, sensorContact: str, tstamp: float):
+        self.___insertHrmData(self.__recordSession.getId(), hr, rr, sensorContact, tstamp)
 
-    def stopRecordSession(self, recordSession, tstamp):
-        self.__updateRecordSession(recordSession.getId(), tstamp)
+    def stopRecordSession(self, tstamp: float):
+        self.__updateRecordSession(self.__recordSession.getId(), tstamp)
         self.__counter = 0
         self.__closeDB(self.__db)
         self.__db = None
