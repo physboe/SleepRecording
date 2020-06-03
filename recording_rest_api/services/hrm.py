@@ -32,6 +32,7 @@ class HrmService():
         self.__thread.start()
 
     def isRecording(self):
+        log.info(self.__blehrs.isRecording())
         return self.__blehrs.isRecording()
 
     def stopRecording(self):
