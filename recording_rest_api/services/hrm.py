@@ -35,6 +35,6 @@ class HrmService():
         self.__blehrs.isRecording()
 
     def stopRecording(self):
-
-        self.__blehrs.stopRecording()
-        self.__recordingProcess.join()
+        if self.__blehrs.isRecording():
+            self.__blehrs.stopRecording()
+            self.__recordingProcess.join()
