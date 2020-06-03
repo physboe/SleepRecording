@@ -29,7 +29,7 @@ def init():
             proc.join()
 
         except KeyboardInterrupt as key:
-            log.exception(key, exc_info=True)
+            log.exception(key, exc_info=False)
             gatttoolutil.stopRecording()
 
         except Exception as e:

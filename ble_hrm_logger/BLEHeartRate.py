@@ -27,10 +27,6 @@ class HrmHandleNotFoundError(Exception):
     pass
 
 
-class NoDeviceConnectedError(Exception):
-    pass
-
-
 class ConnectionLostError(Exception):
     pass
 
