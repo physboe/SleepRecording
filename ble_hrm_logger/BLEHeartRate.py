@@ -119,7 +119,7 @@ class BLEHearRateService:
             raise ConnectionFailed(e)
 
     def __registeringToHrHandle(self, gatttool) -> [str, str]:
-        hr_handle, hr_handle_ctl = self.__lookingForHandle()
+        hr_handle, hr_handle_ctl = self.__lookingForHandle(gatttool)
         gatttool.sendline(f"char-write-req {hr_handle_ctl} 0100")
         return hr_handle, hr_handle_ctl
 
