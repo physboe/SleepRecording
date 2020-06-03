@@ -23,7 +23,7 @@ class HrmService():
 
     def __init__(self):
         log.debug("init")
-        self.__blehrs = BLEHearRateService(HrmListener(), config.GATTTOOL_DEBUG(x))
+        self.__blehrs = BLEHearRateService(HrmListener(), config.GATTTOOL_DEBUG)
 
     def startRecording(self):
         self.__thread = Thread(target=self.__blehrs.startRecording, args=(config.DEVICE_MAC, config.DEVICE_CONNECTION_TYPE))
