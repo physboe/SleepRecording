@@ -62,7 +62,7 @@ class BLEHearRateService:
         self.__gatttool = self.__startGatttool(deviceMac, connectionType)
 
         log.info(f"Establishing connection to {deviceMac}")
-        self.__connect(self.__gatttoo)
+        self.__connect(self.__gatttool)
         log.info(f"Connected to {deviceMac}")
 
     def startRecording(self):
