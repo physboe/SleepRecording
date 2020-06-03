@@ -25,5 +25,6 @@ class Recording(Resource):
             HrmService().stopRecording()
         return None, 201
 
+    @api.marshal_with(recordingState)
     def get(self):
         return HrmService().isRecording()
