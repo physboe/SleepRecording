@@ -1,5 +1,6 @@
 import logging
 from flask_restplus import Api
+from BLEHeartRate import ConnectionFailed
 
 log = logging.getLogger(__name__)
 
@@ -13,3 +14,8 @@ def default_error_handler(e):
     log.exception(message)
 
     return {'message': message}, 500
+
+
+@api.errorhandler(ConnectionFailed)
+def deivce_not_connected_error_handler(e):
+    return {'message': f'Could not connect  {e.deviceMAc}'}, 404
