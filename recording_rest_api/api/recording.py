@@ -13,7 +13,6 @@ ns = api.namespace('recording', description='Operations related to handle hrm lo
 @ns.route('/')
 class Recording(Resource):
 
-
     @api.response(201, 'Recording successfully started.')
     @api.expect(recordingState)
     def put(self):

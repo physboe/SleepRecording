@@ -28,7 +28,9 @@ class ConnectionLostError(Exception):
 
 
 class ConnectionFailed(Exception):
-    pass
+
+    def __init___(self, deviceMac: str):
+        self.deviceMac
 
 
 class BLEHearRateService:
@@ -55,6 +57,7 @@ class BLEHearRateService:
         """
         self.__listener = listener
         self.__debug = debug
+        self.__connected = False
 
     def connectToDevice(self, deviceMac: str, connectionType: str):
         self.__deviceMac = deviceMac
@@ -64,6 +67,7 @@ class BLEHearRateService:
         log.info(f"Establishing connection to {deviceMac}")
         self.__connect(self.__gatttool)
         log.info(f"Connected to {deviceMac}")
+        self.__connected = True
 
     def startRecording(self):
         """
@@ -78,15 +82,17 @@ class BLEHearRateService:
         connectionType : str
             either random or public depends on your device
         """
-        hr_handle, hr_handle_ctl = self.__registeringToHrHandle(self.__gatttoo)
-        log.info(f"Registered to Handle {hr_handle} on {hr_handle_ctl}")
+        if self.__connected:
+            hr_handle, hr_handle_ctl = self.__registeringToHrHandle(self.__gatttoo)
+            log.info(f"Registered to Handle {hr_handle} on {hr_handle_ctl}")
 
-        log.info(f"Start reading {hr_handle}")
-        self.__readOutput(self.__gatttoo, hr_handle)
-        log.info(f"Start reading {hr_handle}")
+            log.info(f"Start reading {hr_handle}")
+            self.__readOutput(self.__gatttoo, hr_handle)
+            log.info(f"Start reading {hr_handle}")
 
-        self.__disconnect(self.__gatttoo)
-        log.info(f"Disconnected to {self.__deviceMac}")
+            self.__disconnect(self.__gatttoo)
+            log.info(f"Disconnected to {self.__deviceMac}")
+        self.__connected = False
 
     def stopRecording(self):
         if self.__recording:
@@ -114,9 +120,9 @@ class BLEHearRateService:
             if i == 0:
                 gatttool.expect(r"\[LE\]>", timeout=30)
 
-        except pexpect.TIMEOUT as e:
+        except pexpect.TIMEOUT:
             log.info("Connection timeout.")
-            raise ConnectionFailed(e)
+            raise ConnectionFailed(self.__deviceMac)
 
     def __registeringToHrHandle(self, gatttool) -> [str, str]:
         hr_handle, hr_handle_ctl = self.__lookingForHandle(gatttool)
