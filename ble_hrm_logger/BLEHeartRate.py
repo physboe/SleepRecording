@@ -11,10 +11,6 @@ log = logging.getLogger(__name__)
 class RecordingListener(abc.ABC):
 
     @abc.abstractclassmethod
-    def __init__(self):
-        pass
-
-    @abc.abstractclassmethod
     def listen(self, hr: int, rr: int, sensorContact: str, tstamp: float):
         pass
 
