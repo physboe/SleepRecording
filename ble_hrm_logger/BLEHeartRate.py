@@ -89,7 +89,7 @@ class BLEHearRateService:
 
             log.info(f"Start reading {hr_handle}")
             self.__readOutput(self.__gatttool, hr_handle)
-            log.info(f"Start reading {hr_handle}")
+            log.info(f"Stop reading {hr_handle}")
 
             self.__disconnect(self.__gatttool)
             log.info(f"Disconnected to {self.__deviceMac}")
@@ -162,8 +162,7 @@ class BLEHearRateService:
                 datahex = gatttool.match.group(1).strip()
                 data = map(lambda x: int(x, 16), datahex.split(b' '))
                 result = self.__interpret(list(data))
-            #    self.__sendToDataLogger(result)
-                log.debug("Handle Notification: " + str(result))
+                self.__sendToDataLogger(result)
             except pexpect.TIMEOUT:
                 log.warn("Connection lost")
                 raise ConnectionLostError("Connection lost")

@@ -28,7 +28,7 @@ class HrmService():
     def startRecording(self):
         self.__blehrs.connectToDevice(config.DEVICE_MAC, config.DEVICE_CONNECTION_TYPE)
         self.__thread = Thread(target=self.__blehrs.startRecording)
-        log.info("start thread")
+        log.info("Start thread")
         self.__thread.start()
 
     def isRecording(self):
