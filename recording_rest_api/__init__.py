@@ -11,5 +11,5 @@ def initialize_app():
     api.init_app(blueprint)
     api.add_namespace(recording_namespace)
     app.register_blueprint(blueprint)
-
+    app.run()
     #db.init_app(flask_app)
