@@ -1,5 +1,5 @@
 from ble_hrm_logger.BLEHeartRate import BLEHearRateService
-from ble_hrm_logger import RecordingListener
+from ble_hrm_logger.BLEHeartRate import RecordingListener
 from ble_hrm_logger import DatabaseLayer as dbl
 import configparser
 import os
