@@ -32,7 +32,7 @@ class HrmService():
         self.__thread.start()
 
     def isRecording(self):
-        self.__blehrs.isRecording()
+        return self.__blehrs.isRecording()
 
     def stopRecording(self):
         if self.__blehrs.isRecording():
