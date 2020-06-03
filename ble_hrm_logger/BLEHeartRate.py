@@ -83,7 +83,7 @@ class BLEHearRateService:
             either random or public depends on your device
         """
         if self.__connected:
-            hr_handle, hr_handle_ctl = self.__registeringToHrHandle(self.__gatttoo)
+            hr_handle, hr_handle_ctl = self.__registeringToHrHandle(self.__gatttool)
             log.info(f"Registered to Handle {hr_handle} on {hr_handle_ctl}")
 
             log.info(f"Start reading {hr_handle}")
