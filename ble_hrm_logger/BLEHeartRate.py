@@ -56,10 +56,18 @@ class BLEHearRateService:
         self.__listener = listener
         self.__debug = debug
 
-    def startRecording(self, deviceMac: str, connectionType: str):
+    def connectToDevice(self, deviceMac: str, connectionType: str):
+        self.__deviceMac = deviceMac
+        log.info("Start gatttool")
+        self.__gatttool = self.__startGatttool(deviceMac, connectionType)
+
+        log.info(f"Establishing connection to {deviceMac}")
+        self.__connect(self.__gatttoo)
+        log.info(f"Connected to {deviceMac}")
+
+    def startRecording(self):
         """
-        This public methode starts gatttool and trys to connect to device.
-        In success it further looks for the right hearrate handler and register
+        If connected this methode looks for the right hearrate handler and register
         itself.
         It starts to listen and send decodec results to logger
 
@@ -70,23 +78,15 @@ class BLEHearRateService:
         connectionType : str
             either random or public depends on your device
         """
-
-        log.info("Start gatttool")
-        gatttool = self.__startGatttool(deviceMac, connectionType)
-
-        log.info(f"Establishing connection to {deviceMac}")
-        self.__connect(gatttool)
-        log.info(f"Connected to {deviceMac}")
-
-        hr_handle, hr_handle_ctl = self.__registeringToHrHandle(gatttool)
+        hr_handle, hr_handle_ctl = self.__registeringToHrHandle(self.__gatttoo)
         log.info(f"Registered to Handle {hr_handle} on {hr_handle_ctl}")
 
         log.info(f"Start reading {hr_handle}")
-        self.__readOutput(gatttool, hr_handle)
+        self.__readOutput(self.__gatttoo, hr_handle)
         log.info(f"Start reading {hr_handle}")
 
-        self.__disconnect(gatttool)
-        log.info(f"Disconnected to {deviceMac}")
+        self.__disconnect(self.__gatttoo)
+        log.info(f"Disconnected to {self.__deviceMac}")
 
     def stopRecording(self):
         if self.__recording:

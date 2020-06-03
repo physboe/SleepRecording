@@ -26,9 +26,10 @@ class HrmService():
         self.__blehrs = BLEHearRateService(HrmListener(), config.GATTTOOL_DEBUG)
 
     def startRecording(self):
-        self.__thread = Thread(target=self.__blehrs.startRecording, args=(config.DEVICE_MAC, config.DEVICE_CONNECTION_TYPE))
+        self.__blehrs.connectToDevice(config.DEVICE_MAC, config.DEVICE_CONNECTION_TYPE)
+        self.__thread = Thread(target=self.__blehrs.startRecording)
         log.info("start thread")
-        self.__thread .start()
+        self.__thread.start()
 
     def isRecording(self):
         self.__blehrs.isRecording()

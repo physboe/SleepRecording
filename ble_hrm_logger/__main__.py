@@ -23,7 +23,8 @@ def init():
         log.info("init BLEHearRateService")
         gatttoolutil = ble.BLEHearRateService(databaselayer, args.debug)
         try:
-            proc = Thread(target=gatttoolutil.startRecording, args=(args.mac, args.type))
+            gatttoolutil.connectToDevice(args.mac, args.type)
+            proc = Thread(target=gatttoolutil.startRecording)
             log.info("start process")
             proc.start()
             proc.join()
