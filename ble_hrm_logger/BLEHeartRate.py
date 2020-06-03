@@ -58,6 +58,7 @@ class BLEHearRateService:
         self.__listener = listener
         self.__debug = debug
         self.__connected = False
+        self.__recording = False
 
     def connectToDevice(self, deviceMac: str, connectionType: str):
         self.__deviceMac = deviceMac
