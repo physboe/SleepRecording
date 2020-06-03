@@ -3,7 +3,7 @@ from ble_hrm_logger.BLEHeartRate import RecordingListener
 import logging
 from singleton_decorator import singleton
 from threading import Thread
-from recording_rest_api.app import config
+from recording_rest_api import app
 
 
 log = logging.getLogger(__name__)
@@ -23,11 +23,11 @@ class HrmService():
 
     def __init__(self):
         log.debug("init")
-        self.__blehrs = BLEHearRateService(HrmListener(), config[self.CONFIG_GATTTOOL_DEBUG])
+        self.__blehrs = BLEHearRateService(HrmListener(), app.config[self.CONFIG_GATTTOOL_DEBUG])
 
     def startRecording(self):
-        mac = config[self.CONFIG_DEVICE_MAC]
-        type = config[self.CONFIG_DEVICE_CONNECTION_TYPE]
+        mac = app.config[self.CONFIG_DEVICE_MAC]
+        type = app.config[self.CONFIG_DEVICE_CONNECTION_TYPE]
         self.__thread = Thread(target=self.__blehrs.startRecording, args=(mac, type))
         log.info("start thread")
         self.__thread .start()
