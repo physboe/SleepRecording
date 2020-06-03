@@ -1,8 +1,5 @@
 import logging
-import traceback
-
 from flask_restplus import Api
-from logger_rest_api import settings
 
 log = logging.getLogger(__name__)
 
@@ -15,5 +12,4 @@ def default_error_handler(e):
     message = 'An unhandled exception occurred.'
     log.exception(message)
 
-    if not settings.FLASK_DEBUG:
-        return {'message': message}, 500
+    return {'message': message}, 500

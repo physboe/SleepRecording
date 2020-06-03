@@ -1,13 +1,18 @@
 # Flask settings
-FLASK_SERVER_NAME = '192.168.1.180:8888'
-FLASK_DEBUG = True  # Do not use debug mode in production
-FLASK_ENV = 'development'
+SERVER_NAME = '192.168.1.180:8888'
+DEBUG = True  # Do not use debug mode in production
+ENV = 'development'
 
 # Flask-Restplus settings
 RESTPLUS_SWAGGER_UI_DOC_EXPANSION = 'list'
 RESTPLUS_VALIDATE = True
 RESTPLUS_MASK_SWAGGER = False
 RESTPLUS_ERROR_404_HELP = False
+
+# Ble Hrm settings
+DEVICE_MAC = "0C:8C:DC:09:FE:6E"
+DEVICE_CONNECTION_TYPE = "public"
+GATTTOOL_DEBUG = False
 
 # SQLAlchemy settings
 SQLALCHEMY_DATABASE_URI = 'sqlite:///records.sqlite'

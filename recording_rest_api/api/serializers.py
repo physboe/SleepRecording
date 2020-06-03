@@ -1,5 +1,5 @@
 from flask_restplus import fields
-from logger_rest_api.api.restplus import api
+from recording_rest_api.api.restplus import api
 
 
 recordingState = api.model('RecordingState', {

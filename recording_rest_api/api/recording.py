@@ -1,17 +1,17 @@
 import logging
 from flask import request
 from flask_restplus import Resource
-from logger_rest_api.api.restplus import api
-from logger_rest_api.api.serializers import  recordingState
-from logger_rest_api.services.hrm import HrmService
+from recording_rest_api.api.restplus import api
+from recording_rest_api.api.serializers import recordingState
+from recording_rest_api.services.hrm import HrmService
 
 log = logging.getLogger(__name__)
 
-ns = api.namespace('hrm', description='Operations related to handle hrm loggings')
+ns = api.namespace('recording', description='Operations related to handle hrm loggings')
 
 
 @ns.route('/')
-class BleHrmRerding(Resource):
+class Recording(Resource):
 
 
     @api.response(201, 'Recording successfully started.')
