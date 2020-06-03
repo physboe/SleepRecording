@@ -1,8 +1,5 @@
 from ble_hrm_logger.BLEHeartRate import BLEHearRateService
 from ble_hrm_logger.BLEHeartRate import RecordingListener
-from ble_hrm_logger import DatabaseLayer as dbl
-import configparser
-import os
 import logging
 from singleton_decorator import singleton
 from threading import Thread
@@ -27,7 +24,6 @@ class HrmService():
     def __init__(self):
         log.debug("init")
         self.__blehrs = BLEHearRateService(HrmListener(), config[self.CONFIG_GATTTOOL_DEBUG])
-
 
     def startRecording(self):
         mac = config[self.CONFIG_DEVICE_MAC]
