@@ -17,10 +17,6 @@ class HrmListener(RecordingListener):
 @singleton
 class HrmService():
 
-    CONFIG_DEVICE_MAC = "DEVICE_MAC"
-    CONFIG_DEVICE_CONNECTION_TYPE = "DEVICE_CONNECTION_TYPE"
-    CONFIG_GATTTOOL_DEBUG = "GATTTOOL_DEBUG"
-
     def __init__(self):
         log.debug("init")
         self.__blehrs = BLEHearRateService(HrmListener(), config.GATTTOOL_DEBUG)
