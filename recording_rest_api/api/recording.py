@@ -4,6 +4,7 @@ from flask_restplus import Resource
 from recording_rest_api.api.restplus import api
 from recording_rest_api.api.serializers import recordingState
 from recording_rest_api.services.hrm import HrmService
+from recording_rest_api.model.recording import RecordingState
 
 log = logging.getLogger(__name__)
 
@@ -27,4 +28,4 @@ class Recording(Resource):
 
     @api.marshal_with(recordingState)
     def get(self):
-        return HrmService().isRecording()
+        return RecordingState(HrmService().isRecording())
