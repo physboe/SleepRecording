@@ -88,10 +88,10 @@ class BLEHearRateService:
             log.info(f"Registered to Handle {hr_handle} on {hr_handle_ctl}")
 
             log.info(f"Start reading {hr_handle}")
-            self.__readOutput(self.__gatttoo, hr_handle)
+            self.__readOutput(self.__gatttool, hr_handle)
             log.info(f"Start reading {hr_handle}")
 
-            self.__disconnect(self.__gatttoo)
+            self.__disconnect(self.__gatttool)
             log.info(f"Disconnected to {self.__deviceMac}")
         self.__connected = False
 
