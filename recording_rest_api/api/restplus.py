@@ -1,6 +1,6 @@
 import logging
 from flask_restplus import Api
-from BLEHeartRate import ConnectionFailed
+from ble_hrm_logger.BLEHeartRate import ConnectionFailed
 
 log = logging.getLogger(__name__)
 
