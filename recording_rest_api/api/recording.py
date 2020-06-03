@@ -24,3 +24,6 @@ class Recording(Resource):
         else:
             HrmService().stopRecording()
         return None, 201
+
+    def get(self):
+        return HrmService().isRecording()
