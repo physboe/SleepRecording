@@ -1,9 +1,10 @@
 import abc
+from recording_rest_api.database.recording import DaoRecordSession
 
 class RecordingService(abc.ABC):
 
     @abc.abstractclassmethod
-    def startRecording(self):
+    def startRecording(self, record: DaoRecordSession):
         pass
 
     @abc.abstractclassmethod

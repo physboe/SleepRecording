@@ -46,7 +46,7 @@ class BLEHearRateService:
     RESULT_EE = "ee"
     RESULT_HRV_UINT8 = "hrv_uint8"
 
-    def __init__(self, listener: RecordingListener, debug: bool):
+    def __init__(self, debug: bool):
         """
         Parameters
         ----------
@@ -55,7 +55,6 @@ class BLEHearRateService:
         debug : bool
             If you want to debug gatttool output
         """
-        self.__listener = listener
         self.__debug = debug
         self.__connected = False
         self.__recording = False
@@ -70,7 +69,7 @@ class BLEHearRateService:
         log.info(f"Connected to {deviceMac}")
         self.__connected = True
 
-    def startRecording(self):
+    def startRecording(self, listener: RecordingListener):
         """
         If connected this methode looks for the right hearrate handler and register
         itself.
@@ -88,7 +87,7 @@ class BLEHearRateService:
             log.info(f"Registered to Handle {hr_handle} on {hr_handle_ctl}")
 
             log.info(f"Start reading {hr_handle}")
-            self.__readOutput(self.__gatttool, hr_handle)
+            self.__readOutput(self.__gatttool, hr_handle, listener)
             log.info(f"Stop reading {hr_handle}")
 
             self.__disconnect(self.__gatttool)
@@ -155,7 +154,7 @@ class BLEHearRateService:
         log.debug(f"Found Handle: {hr_handle}")
         return hr_handle, hr_handle_ctl
 
-    def __readOutput(self, gatttool, hr_handle: str):
+    def __readOutput(self, gatttool, hr_handle: str, listener: RecordingListener):
         self.__recording = True
         notification_expect = f"Notification handle = {hr_handle} value: ([0-9a-f ]+)"
         while self.__recording:
@@ -164,7 +163,7 @@ class BLEHearRateService:
                 datahex = gatttool.match.group(1).strip()
                 data = map(lambda x: int(x, 16), datahex.split(b' '))
                 result = self.__interpret(list(data))
-                self.__sendToDataLogger(result)
+                self.__sendToDataLogger(result, listener)
             except pexpect.TIMEOUT:
                 log.warn("Connection lost")
                 raise ConnectionLostError("Connection lost")
@@ -172,12 +171,12 @@ class BLEHearRateService:
     def __getTimeStamp(self):
         return int(time.time())
 
-    def __sendToDataLogger(self, result):
+    def __sendToDataLogger(self, result, listener: RecordingListener):
         if result[self.RESULT_RR_INTERVAL_AVAILABLE]:
             for rrInterval in result[self.RESULT_RR_INTERVAL]:
-                self.__listener.listen(result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
+                listener.listen(result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
         else:
-            self.__listener.listen(result[self.RESULT_HR], None, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
+            listener.listen(result[self.RESULT_HR], None, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
 
     def __interpret(self, data):
 
