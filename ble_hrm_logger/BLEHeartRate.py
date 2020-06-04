@@ -177,7 +177,7 @@ class BLEHearRateService:
             for rrInterval in result[self.RESULT_RR_INTERVAL]:
                 self.__listener.listen(result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
         else:
-            self.__listener.listen(result[self.RESULT_HR], rrInterval, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
+            self.__listener.listen(result[self.RESULT_HR], None, result[self.RESULT_SENSOR_CONTACT], self.__getTimeStamp())
 
     def __interpret(self, data):
 
