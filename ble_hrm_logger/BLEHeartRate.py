@@ -111,6 +111,8 @@ class BLEHearRateService:
         return gatttool
 
     def __disconnect(self, gatttool):
+        gatttool.sendline("disconnect")
+        gatttool.expect(r"\[LE\]>")
         gatttool.sendline("quit")
         gatttool.wait()
 
