@@ -15,7 +15,7 @@ class RecordingManager():
         """
         log.info("Init ServicesManager")
         self.__services = [HrmService()]
-        self.__recoding = False
+        self.__recording = False
 
     def startRecordings(self):
         log.info("Starting Services")
@@ -30,8 +30,8 @@ class RecordingManager():
         # Update DB
         for service in self.__services:
             service.stopRecording()
-        self.__recoding = False
+        self.__recording = False
         log.info("Services stopped")
 
     def isRecording(self) -> bool:
-        return self.__recoding
+        return self.__recording
