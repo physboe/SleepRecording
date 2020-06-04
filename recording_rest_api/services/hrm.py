@@ -16,6 +16,8 @@ class HrmListener(RecordingListener):
         self.__recordSession = recordSession
 
     def listen(self, hr: int, rr: int, sensorContact: str, tstamp: float):
+        global app
+        with app.app_context():
             hrmRecord = DaoHrmRecord(hr, rr, sensorContact, tstamp, self.__recordSession)
             db.session.add(hrmRecord)
             db.session.commit()
