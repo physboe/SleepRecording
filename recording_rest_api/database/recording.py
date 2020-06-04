@@ -5,13 +5,12 @@ from sqlalchemy.orm import relationship
 
 class DaoRecordSession(db.Model):
     __tablename__ = 'recordsession'
+    __table_args__ = {'sqlite_autoincrement': True}
 
     id = db.Column(db.Integer, primary_key=True)
     startTime = db.Column(db.Float)
     stopTime = db.Column(db.Float)
     hrmrecords = relationship("DaoHrmRecord", back_populates="recordSession")
-
-    sqlite_autoincrement=True
 
     def __init__(self, startTime: float):
         self.startTime = startTime
@@ -22,6 +21,7 @@ class DaoRecordSession(db.Model):
 
 class DaoHrmRecord(db.Model):
     __tablename__ = 'hrmrecord'
+    __table_args__ = {'sqlite_autoincrement': True}
 
     id = db.Column(db.Integer, primary_key=True)
     hr = db.Column(db.Integer)
@@ -29,7 +29,6 @@ class DaoHrmRecord(db.Model):
     sensorContact = db.Column(db.Text)
     time = db.Column(db.Float)
     recordsessionId = (db.Integer, ForeignKey('recordsession.id'))
-    sqlite_autoincrement=True
 
     recordSession = relationship("DaoRecordSession", back_populates="hrmrecords")
 
