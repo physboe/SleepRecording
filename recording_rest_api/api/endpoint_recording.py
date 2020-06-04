@@ -21,7 +21,7 @@ class Recording(Resource):
         Creates a new blog category.
         """
         if request.json.get('running'):
-            RecordingManager().startRecordings()
+            RecordingManager().startRecordings(request.json.get('tag'))
         else:
             RecordingManager().stopRecordings()
         return None, 201
