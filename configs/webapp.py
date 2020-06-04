@@ -15,6 +15,6 @@ DEVICE_CONNECTION_TYPE = "public"
 GATTTOOL_DEBUG = False
 
 # SQLAlchemy settings
-SQLALCHEMY_DATABASE_URI = 'sqlite+pysqlite:///../records.sqlite'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///../records.sqlite'
 SQLALCHEMY_RECORD_QUERIES = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
