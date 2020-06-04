@@ -4,7 +4,7 @@ from flask_restplus import Resource
 from recording_rest_api.api.restplus import api
 from recording_rest_api.api.serializers import recordingState
 from recording_rest_api.services.manager import RecordingManager
-from recording_rest_api.model.recording import RecordingState
+from recording_rest_api.database.recording import RecordingState
 
 log = logging.getLogger(__name__)
 
