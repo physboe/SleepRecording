@@ -46,6 +46,6 @@ class RecordingManager():
         db.session.add(recordsession)
         return recordsession
 
-    def __updateRecordSession(self, recordsession: DaoRecordSession):
+    def __updateRecordSession(self, recordsession: DaoRecordSession, tag: str):
         db.session.add(recordsession)
         db.session.commit()
