@@ -21,5 +21,5 @@ setup(
     ],
     python_requires='>=3.7.3',
     packages=find_packages(),
-    install_requires=['pexpect==4.8.0', 'flask-restplus==0.9.2', 'singleton_decorator==1.0.0', 'Flask-SQLAlchemy==2.4.3', 'flask==1.0.2', 'werkzeug=0.16.1'],
+    install_requires=['pexpect==4.8.0', 'flask-restplus==0.9.2', 'singleton_decorator==1.0.0', 'Flask-SQLAlchemy==2.4.3', 'flask==1.0.2', 'werkzeug==0.16.1'],
 )
