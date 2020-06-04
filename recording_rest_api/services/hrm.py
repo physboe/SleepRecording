@@ -20,7 +20,6 @@ class HrmListener(RecordingListener):
             pass
 
 
-@singleton
 class HrmService(RecordingService):
 
     def __init__(self):
