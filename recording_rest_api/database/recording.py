@@ -28,7 +28,7 @@ class DaoHrmRecord(db.Model):
     rr = db.Column(db.Integer)
     sensorContact = db.Column(db.Text)
     time = db.Column(db.Float)
-    recordsessionId = (db.Integer, ForeignKey('recordsession.id'))
+    recordsessionId = db.Column(db.Integer, ForeignKey('recordsession.id'))
 
     recordSession = relationship("DaoRecordSession", back_populates="hrmrecords")
 
