@@ -1,6 +1,8 @@
 from singleton_decorator import singleton
 from recording_rest_api.services.hrm import HrmService
 import logging
+from recording_rest_api.database.recording import DaoRecordSession
+from recording_rest_api.database import db
 
 
 log = logging.getLogger(__name__)
@@ -19,15 +21,15 @@ class RecordingManager():
 
     def startRecordings(self):
         log.info("Starting Services")
-        # Insert DB
+        self.__recordsession = self.__createRecordSession()
         for service in self.__services:
-            service.startRecording()
+            service.startRecording(self.__recordsession)
         self.__recording = True
         log.info("Services started")
 
     def stopRecordings(self):
         log.info("Stopping Services")
-        # Update DB
+
         for service in self.__services:
             service.stopRecording()
         self.__recording = False
@@ -35,3 +37,8 @@ class RecordingManager():
 
     def isRecording(self) -> bool:
         return self.__recording
+
+    def __createRecordSession(self) -> DaoRecordSession:
+        recordsession = DaoRecordSession()
+        db.session.add(recordsession)
+        return recordsession
