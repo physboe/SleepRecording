@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint
-from recording_rest_api.api.recording import ns as recording_namespace
-from recording_rest_api.api.controll import ns as controll_namespace
+from recording_rest_api.api.endpoint_recording import ns as recording_namespace
+from recording_rest_api.api.endpoint_controll import ns as controll_namespace
 from recording_rest_api.api.restplus import api
 from recording_rest_api.database import db
 import logging

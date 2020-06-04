@@ -1,7 +1,7 @@
 from ble_hrm_logger.BLEHeartRate import BLEHearRateService, RecordingListener
 from recording_rest_api.services import RecordingService
-from recording_rest_api.database.recording import DaoRecordSession
-from singleton_decorator import singleton
+from recording_rest_api.database.recording import DaoRecordSession, DaoHrmRecord
+from recording_rest_api.database import db
 from threading import Thread
 from configs import webapp as config
 import logging
@@ -16,8 +16,9 @@ class HrmListener(RecordingListener):
         self.__recordSession = recordSession
 
     def listen(self, hr: int, rr: int, sensorContact: str, tstamp: float):
-            log.debug(f"HR: {hr} RR: {rr}")
-            pass
+            hrmRecord = DaoHrmRecord(hr, rr, sensorContact, tstamp, self.__recordSession)
+            db.session.add(hrmRecord)
+            db.session.commit()
 
 
 class HrmService(RecordingService):

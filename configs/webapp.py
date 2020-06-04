@@ -1,6 +1,6 @@
 # Flask settings
-SERVER_NAME = '192.168.1.180:8888'
-DEBUG = True  # Do not use debug mode in production
+SERVER_NAME = 'localhost:8888'
+DEBUG = False  # Do not use debug mode in production
 ENV = 'development'
 
 # Flask-Restplus settings
@@ -16,4 +16,5 @@ GATTTOOL_DEBUG = False
 
 # SQLAlchemy settings
 SQLALCHEMY_DATABASE_URI = 'sqlite:///../records.sqlite'
-SQLALCHEMY_RECORD_QUERIES = True
+SQLALCHEMY_RECORD_QUERIES = False
+SQLALCHEMY_TRACK_MODIFICATIONS = False
