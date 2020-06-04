@@ -26,12 +26,12 @@ class RecordingManager():
         log.info("Services started")
 
     def stopRecordings(self):
-        log.info("Starting Services")
+        log.info("Stopping Services")
         # Update DB
         for service in self.__services:
             service.stopRecording()
         self.__recoding = False
-        log.info("Services started")
+        log.info("Services stopped")
 
     def isRecording(self) -> bool:
         return self.__recoding
