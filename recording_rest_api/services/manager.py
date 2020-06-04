@@ -33,7 +33,9 @@ class RecordingManager():
 
         for service in self.__services:
             service.stopRecording()
+
         self.__recording = False
+
         log.info("Services stopped")
 
     def isRecording(self) -> bool:
@@ -43,3 +45,7 @@ class RecordingManager():
         recordsession = DaoRecordSession(time.time())
         db.session.add(recordsession)
         return recordsession
+
+    def __updateRecordSession(self, recordsession: DaoRecordSession):
+        db.session.add(recordsession)
+        db.session.commit()
