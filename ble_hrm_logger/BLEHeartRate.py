@@ -103,7 +103,9 @@ class BLEHearRateService:
         return self.__recording
 
     def __startGatttool(self, deviceMac: str, connectionType: str):
-        gatttool = pexpect.spawn(f"gatttool -b {deviceMac} -t {connectionType} --interactive")
+        gattcmd = f"gatttool -b {deviceMac} -t {connectionType} --interactive"
+        log.debug(gattcmd)
+        gatttool = pexpect.spawn(gattcmd)
         # enable debug mode in sys out
         if self.__debug:
             gatttool.logfile = sys.stdout.buffer
