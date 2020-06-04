@@ -120,7 +120,7 @@ class BLEHearRateService:
         gatttool.expect(r"\[LE\]>")
         gatttool.sendline("connect")
         try:
-            i = gatttool.expect(["Connection successful.", r"\[CON\]"], timeout=60)
+            i = gatttool.expect(["Connection successful.", r"\[CON\]"], timeout=45)
             if i == 0:
                 gatttool.expect(r"\[LE\]>", timeout=30)
 
