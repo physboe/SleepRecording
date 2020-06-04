@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint
 from recording_rest_api.api.recording import ns as recording_namespace
+from recording_rest_api.api.controll import ns as controll_namespace
 from recording_rest_api.api.restplus import api
 from recording_rest_api.database import db
 import logging
@@ -15,5 +16,6 @@ def initialize_app():
     blueprint = Blueprint('api', __name__, url_prefix='/api')
     api.init_app(blueprint)
     api.add_namespace(recording_namespace)
+    api.add_namespace(controll_namespace)
     app.register_blueprint(blueprint)
     db.init_app(app)
