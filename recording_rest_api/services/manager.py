@@ -24,7 +24,7 @@ class RecordingManager():
         log.info("Starting Services")
         self.__recordsession = self.__createRecordSession(tag)
         for service in self.__services:
-            service.startRecording(self.__recordsession, tag)
+            service.startRecording(self.__recordsession)
         self.__recording = True
         log.info("Services started")
 
@@ -46,6 +46,6 @@ class RecordingManager():
         db.session.add(recordsession)
         return recordsession
 
-    def __updateRecordSession(self, recordsession: DaoRecordSession, tag: str):
+    def __updateRecordSession(self, recordsession: DaoRecordSession):
         db.session.add(recordsession)
         db.session.commit()
