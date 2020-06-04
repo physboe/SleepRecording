@@ -1,24 +1,9 @@
 from singleton_decorator import singleton
 from recording_rest_api.services.hrm import HrmService
 import logging
-import abc
 
 
 log = logging.getLogger(__name__)
-
-class RecordingService(abc.ABC):
-
-    @abc.abstractclassmethod
-    def startRecording(self):
-        pass
-
-    @abc.abstractclassmethod
-    def isRecording(self) -> bool:
-        pass
-
-    @abc.abstractclassmethod
-    def stopRecording(self):
-        pass
 
 
 @singleton

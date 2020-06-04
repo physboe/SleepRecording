@@ -1,5 +1,5 @@
 from ble_hrm_logger.BLEHeartRate import BLEHearRateService, RecordingListener
-from recording_rest_api.services.manager import RecordingService
+from recording_rest_api.services import RecordingService
 from singleton_decorator import singleton
 from threading import Thread
 from configs import webapp as config

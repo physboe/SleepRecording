@@ -3,7 +3,7 @@ from flask import request
 from flask_restplus import Resource
 from recording_rest_api.api.restplus import api
 from recording_rest_api.api.serializers import recordingState
-from recording_rest_api.services.manager import ServicesManager
+from recording_rest_api.services.manager import RecordingManager
 from recording_rest_api.model.recording import RecordingState
 
 log = logging.getLogger(__name__)
@@ -21,11 +21,11 @@ class Recording(Resource):
         Creates a new blog category.
         """
         if request.json.get('running'):
-            ServicesManager().startRecordings()
+            RecordingManager().startRecordings()
         else:
-            ServicesManager().stopRecordings()
+            RecordingManager().stopRecordings()
         return None, 201
 
     @api.marshal_with(recordingState)
     def get(self):
-        return RecordingState(ServicesManager().isRecording())
+        return RecordingState(RecordingManager().isRecording())
