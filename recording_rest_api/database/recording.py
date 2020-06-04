@@ -9,7 +9,8 @@ class DaoRecordSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     startTime = db.Column(db.Float)
     stopTime = db.Column(db.Float)
-
+    sqlite_autoincrement=True
+    
     def __init__(self, startTime: float):
         self.startTime = startTime
 
@@ -26,6 +27,7 @@ class DaoHrmRecord(db.Model):
     sensorContact = db.Column(db.Text)
     time = db.Column(db.Float)
     recordsessionId = (db.Integer, ForeignKey('recordsession.id'))
+    sqlite_autoincrement=True
 
     recordSession = relationship("recordsession")
 
