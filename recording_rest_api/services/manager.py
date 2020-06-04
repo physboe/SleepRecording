@@ -1,8 +1,9 @@
 from singleton_decorator import singleton
 from recording_rest_api.services.hrm import HrmService
-import logging
 from recording_rest_api.database.recording import DaoRecordSession
 from recording_rest_api.database import db
+import time
+import logging
 
 
 log = logging.getLogger(__name__)
@@ -39,6 +40,6 @@ class RecordingManager():
         return self.__recording
 
     def __createRecordSession(self) -> DaoRecordSession:
-        recordsession = DaoRecordSession()
+        recordsession = DaoRecordSession(time.time())
         db.session.add(recordsession)
         return recordsession
