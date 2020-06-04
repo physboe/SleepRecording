@@ -4,3 +4,4 @@ __pycache__
 build
 dist
 ble_rr_logger.egg-info
+*.sqlite
