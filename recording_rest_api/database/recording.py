@@ -10,10 +10,12 @@ class DaoRecordSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     startTime = db.Column(db.Float)
     stopTime = db.Column(db.Float)
+    tag = db.Column(db.Text)
     hrmrecords = relationship("DaoHrmRecord", back_populates="recordSession")
 
-    def __init__(self, startTime: float):
+    def __init__(self, startTime: float, tag: str):
         self.startTime = startTime
+        self.tag = tag
 
     def __repr__(self):
         return f'<DaoRecordSession id:{self.id}, startTime: {self.startTime}, stopTime: {self.stopTime}>'
@@ -45,6 +47,7 @@ class DaoHrmRecord(db.Model):
 
 class RecordingState():
     running: bool
+    tag: str
 
     def __init__(self, running: bool):
         self.running = running

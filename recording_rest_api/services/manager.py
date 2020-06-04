@@ -20,9 +20,9 @@ class RecordingManager():
         self.__services = [HrmService()]
         self.__recording = False
 
-    def startRecordings(self):
+    def startRecordings(self, tag: str):
         log.info("Starting Services")
-        self.__recordsession = self.__createRecordSession()
+        self.__recordsession = self.__createRecordSession(tag)
         for service in self.__services:
             service.startRecording(self.__recordsession)
         self.__recording = True
@@ -46,6 +46,6 @@ class RecordingManager():
         db.session.add(recordsession)
         return recordsession
 
-    def __updateRecordSession(self, recordsession: DaoRecordSession):
+    def __updateRecordSession(self, recordsession: DaoRecordSession, tag: str):
         db.session.add(recordsession)
         db.session.commit()
