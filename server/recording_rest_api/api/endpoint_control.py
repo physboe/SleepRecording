@@ -20,3 +20,4 @@ class Ping(Resource):
     @api.response(201, 'Ping successfull')
     def get(self):
         log.info(f"ping from ")
+        return True
