@@ -19,3 +19,4 @@ class Ping(Resource):
 
     def get(self):
         log.info(f"ping from ")
+        return True
