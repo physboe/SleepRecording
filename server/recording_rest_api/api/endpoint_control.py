@@ -5,7 +5,7 @@ from recording_rest_api import database
 
 log = logging.getLogger(__name__)
 
-ns = api.namespace('control', description='Operations related to handle hrm loggings')
+ns = api.namespace('ping', description='Operations related to handle hrm loggings')
 
 
 @ns.route('/install')
@@ -14,7 +14,7 @@ class Install(Resource):
     def get(self):
         database.reset_database()
 
-@ns.route('/ping')
+@ns.route('/')
 class Ping(Resource):
 
     def get(self):
