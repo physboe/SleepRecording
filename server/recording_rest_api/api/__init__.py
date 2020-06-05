@@ -1,5 +1,5 @@
 from recording_rest_api.api.endpoint_recording import ns as recording_namespace
-from recording_rest_api.api.endpoint_controll import ns as controll_namespace
+from recording_rest_api.api.endpoint_control import ns as control_namespace
 from recording_rest_api.api.restplus import api
 from recording_rest_api.database import db
 from recording_rest_api import app
@@ -15,6 +15,6 @@ def initialize_app():
     blueprint = Blueprint('api', __name__, url_prefix='/api')
     api.init_app(blueprint)
     api.add_namespace(recording_namespace)
-    api.add_namespace(controll_namespace)
+    api.add_namespace(control_namespace)
     app.register_blueprint(blueprint)
     db.init_app(app)
