@@ -15,8 +15,8 @@ class Install(Resource):
         database.reset_database()
 
 @ns.route('/')
+@api.response(201, 'Ping successfull')
 class Ping(Resource):
 
     def get(self):
         log.info(f"ping from ")
-        return True
