@@ -5,7 +5,7 @@ from recording_rest_api import database
 from recording_rest_api.api.models import pingResponse
 
 log = logging.getLogger(__name__)
-ns = api.namespace('ping', description='Operations related to administrate')
+ns = api.namespace('connect', description='Operations related to administrate')
 
 
 @ns.route('/install')
