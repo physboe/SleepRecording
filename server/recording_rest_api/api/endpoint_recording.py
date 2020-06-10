@@ -24,7 +24,7 @@ class Recording(Resource):
             RecordingManager().startRecordings(request.json.get('tag'))
         else:
             RecordingManager().stopRecordings()
-        return RecordingState(RecordingManager().isRecording()), 201
+        return RecordingState(RecordingManager().isRecording())
 
     @api.marshal_with(recordingState)
     def get(self):
