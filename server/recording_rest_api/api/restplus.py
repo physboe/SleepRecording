@@ -4,8 +4,8 @@ from ble_hrm_logger.BLEHeartRate import ConnectionFailed
 
 log = logging.getLogger(__name__)
 
-api = Api(version='1.0', title='Ble Hrm Api',
-          description='To Start and Stop the Hrm Recording')
+api = Api(version='1.0', title='Sleep Recording Api',
+          description='To Start and Stop the Sleep Recording')
 
 
 @api.errorhandler

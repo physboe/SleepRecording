@@ -6,3 +6,7 @@ recordingState = api.model('RecordingState', {
     'running': fields.Boolean(required=True),
     'tag' : fields.String(required=False)
 })
+
+pingResponse = api.model('PingReponse', {
+    'ping': fields.Boolean(default=True)
+})

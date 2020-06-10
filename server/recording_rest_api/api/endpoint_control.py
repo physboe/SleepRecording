@@ -2,9 +2,10 @@ import logging
 from flask_restplus import Resource
 from recording_rest_api.api.restplus import api
 from recording_rest_api import database
+from recording_rest_api.api.models import pingResponse
 
 log = logging.getLogger(__name__)
-ns = api.namespace('ping', description='Operations related to handle hrm loggings')
+ns = api.namespace('ping', description='Operations related to administrate')
 
 
 @ns.route('/install')
@@ -17,7 +18,7 @@ class Install(Resource):
 @ns.route('/')
 class Ping(Resource):
 
-    @api.response(201, 'Ping successfull')
+    @api.marshal_with(pingResponse)
     def get(self):
         log.info(f"ping from ")
-        return None, 201
+        return True, 201
