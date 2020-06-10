@@ -1,7 +1,7 @@
 # Flask settings
 SERVER_NAME = '0.0.0.0:8888'
 DEBUG = False  # Do not use debug mode in production
-ENV = 'development'
+ENV = 'production'
 SSL_CONTEXT = 'adhoc'
 
 # Flask-Restplus settings
