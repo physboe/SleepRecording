@@ -22,10 +22,10 @@ class RecordingManager():
 
     def startRecordings(self, tag: str):
         log.info("Starting Services")
+        self.__recording = True
         self.__recordsession = self.__createRecordSession(tag)
         for service in self.__services:
             service.startRecording(self.__recordsession)
-        self.__recording = True
         log.info("Services started")
 
     def stopRecordings(self):
