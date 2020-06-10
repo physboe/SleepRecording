@@ -1,5 +1,5 @@
 # Flask settings
-SERVER_NAME = '192.168.1.180:8888'
+SERVER_NAME = 'raspbonipi4:8888'
 DEBUG = False  # Do not use debug mode in production
 ENV = 'development'
 SSL_CONTEXT = 'adhoc'
