@@ -6,3 +6,9 @@ dist
 ble_rr_logger.egg-info
 *.sqlite
 *.pem
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/server.iml
+/.idea/vcs.xml
