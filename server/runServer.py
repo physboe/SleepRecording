@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 def main():
     log.info(f'>> Starting development server at https://{config.SERVER_NAME}/api/ <<')
     api.initialize_app()
-    app.run(ssl_context='adhoc')
+    app.run(ssl_context=('cert/cert.pem', 'cert/key.pem'))
 
 
 
