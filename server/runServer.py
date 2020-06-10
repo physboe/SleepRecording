@@ -11,8 +11,8 @@ log = logging.getLogger(__name__)
 
 def main():
     api.initialize_app()
-#    app.run(host='0.0.0.0', ssl_context=('cert/cert.pem', 'cert/key.pem'))
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', ssl_context=('cert/cert.pem', 'cert/key.pem'))
+#    app.run(host='0.0.0.0')
 
 
 if __name__ == "__main__":
