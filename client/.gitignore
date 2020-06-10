@@ -21,3 +21,6 @@
 /.gradle/6.1.1/javaCompile/taskHistory.bin
 /.gradle/6.1.1/fileHashes/resourceHashesCache.bin
 .DS_Store
+/local.properties
+/gradle.properties
+
