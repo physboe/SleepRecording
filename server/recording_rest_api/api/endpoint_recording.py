@@ -14,7 +14,7 @@ ns = api.namespace('recording', description='Operations related recording')
 @ns.route('/')
 class Recording(Resource):
 
-    @api.response(201, 'Recording successfully started.')
+    @api.marshal_with(recordingState)
     @api.expect(recordingState)
     def put(self):
         """
@@ -24,7 +24,7 @@ class Recording(Resource):
             RecordingManager().startRecordings(request.json.get('tag'))
         else:
             RecordingManager().stopRecordings()
-        return None, 201
+        return RecordingState(RecordingManager().isRecording()), 201
 
     @api.marshal_with(recordingState)
     def get(self):
