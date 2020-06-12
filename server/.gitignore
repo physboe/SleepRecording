@@ -12,3 +12,8 @@ ble_rr_logger.egg-info
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/server.iml
 /.idea/vcs.xml
+/sleep_record_server.egg-info/dependency_links.txt
+/sleep_record_server.egg-info/PKG-INFO
+/sleep_record_server.egg-info/requires.txt
+/sleep_record_server.egg-info/SOURCES.txt
+/sleep_record_server.egg-info/top_level.txt
