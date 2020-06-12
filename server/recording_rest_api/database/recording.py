@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 class DaoRecordSession(db.Model):
     __tablename__ = 'recordsession'
-    __table_args__ = {'sqlite_autoincrement': True}
+  #  __table_args__ = {'sqlite_autoincrement': True}
 
     id = db.Column(db.Integer, primary_key=True)
     startTime = db.Column(db.Float)
@@ -23,6 +23,7 @@ class DaoRecordSession(db.Model):
 
 class DaoHrmRecord(db.Model):
     __tablename__ = 'hrmrecord'
+ #
     __table_args__ = {'sqlite_autoincrement': True}
 
     id = db.Column(db.Integer, primary_key=True)

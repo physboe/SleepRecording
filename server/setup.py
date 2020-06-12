@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="ble_rr_logger",
+    name="sleep_record_server",
     version="1.0.0",
     author="Andre Boeni",
     author_email="boeni10@gmail.com",
@@ -21,5 +21,5 @@ setup(
     ],
     python_requires='>=3.7.3',
     packages=find_packages(),
-    install_requires=['pexpect==4.8.0', 'flask-restplus==0.13.0', 'singleton_decorator==1.0.0', 'Flask-SQLAlchemy==2.4.3', 'flask==1.1.2', 'werkzeug==0.16.1', 'pyopenssl==19.1.0'],
+    install_requires=['psycopg2==2.8.5', 'pexpect==4.8.0', 'flask-restplus==0.13.0', 'singleton_decorator==1.0.0', 'Flask-SQLAlchemy==2.4.3', 'flask==1.1.2', 'werkzeug==0.16.1', 'pyopenssl==19.1.0'],
 )
