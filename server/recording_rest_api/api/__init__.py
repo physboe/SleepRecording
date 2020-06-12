@@ -5,8 +5,12 @@ from recording_rest_api.database import db
 from recording_rest_api import app
 from flask import Blueprint
 import logging
+import os
 
+logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'configs/logging.conf'))
+logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
+
 
 
 def initialize_app():
