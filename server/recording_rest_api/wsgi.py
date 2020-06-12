@@ -8,7 +8,6 @@ logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 
 
-if __name__ == "__main__":
-    api.initialize_app()
-    #    app.run(host='0.0.0.0', ssl_context=('cert/cert.pem', 'cert/key.pem'))
-    app.run()
+api.initialize_app()
+#    app.run(host='0.0.0.0', ssl_context=('cert/cert.pem', 'cert/key.pem'))
+app.run()
