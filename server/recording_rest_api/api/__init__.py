@@ -6,6 +6,9 @@ from recording_rest_api import app
 from flask import Blueprint
 import logging
 
+log = logging.getLogger(__name__)
+
+
 def initialize_app():
     log.info("Init Flaskapp")
     app.config.from_object('configs.webapp')
