@@ -16,7 +16,7 @@ setup(
     version="1.0.0",
     author="Andre Boeni",
     author_email="boeni10@gmail.com",
-    description="A little tool to read RR intervalls from BLE Device and " +
+    description="A little tool to read RR intervals from BLE Device and " +
                 "save it to a sqlite3 database. " +
                 "You need gatttool to make it work.",
     long_description=long_description,
